@@ -20,10 +20,14 @@
 
 #pragma once
 
+#include <memory>
+
 namespace brayns
 {
 class OptiXCamera;
 using OptiXCameraPtr = std::shared_ptr<OptiXCamera>;
+class OptiXCameraProgram;
+using OptiXCameraProgramPtr = std::shared_ptr<OptiXCameraProgram>;
 
 constexpr size_t OPTIX_STACK_SIZE = 16384;
 constexpr size_t OPTIX_RAY_TYPE_COUNT = 2;

@@ -25,7 +25,7 @@
 
 #include <optixu/optixpp_namespace.h>
 
-#include "CommonStructs.h"
+#include "OptiXCommonStructs.h"
 
 namespace brayns
 {

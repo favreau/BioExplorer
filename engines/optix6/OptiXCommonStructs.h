@@ -44,3 +44,8 @@ struct PerRayData_radiance
     ::optix::float3 rayDdx;
     ::optix::float3 rayDdy;
 };
+
+struct PerRayData_shadow
+{
+    ::optix::float3 attenuation;
+};

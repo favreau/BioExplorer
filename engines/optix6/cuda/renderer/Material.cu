@@ -17,15 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../CommonStructs.h"
-
+#include "../../OptiXCommonStructs.h"
 
 namespace brayns
 {
-#define float3_as_args(u)                        \
-reinterpret_cast<unsigned int &>((u).x),     \
-    reinterpret_cast<unsigned int &>((u).y), \
-    reinterpret_cast<unsigned int &>((u).z)
+#define float3_as_args(u)                                                             \
+    reinterpret_cast<unsigned int &>((u).x), reinterpret_cast<unsigned int &>((u).y), \
+        reinterpret_cast<unsigned int &>((u).z)
 
 extern "C"
 {
@@ -74,23 +72,17 @@ static __device__ __inline__ void setOcclusionPRD(const OcclusionPRD &prd)
     optixSetPayload_2(__float_as_uint(prd.attenuation.z));
 }
 
-static __device__ __inline__ float3 traceRadianceRay(float3 origin,
-                                                     float3 direction,
-                                                     int depth,
-                                                     float importance)
+static __device__ __inline__ float3 traceRadianceRay(float3 origin, float3 direction, int depth, float importance)
 {
     RadiancePRD prd;
     prd.depth = depth;
     prd.importance = importance;
 
-    optixTrace(params.handle, origin, direction, params.scene_epsilon, 1e16f,
-               0.0f, OptixVisibilityMask(1), OPTIX_RAY_FLAG_NONE,
-               RAY_TYPE_RADIANCE, RAY_TYPE_COUNT, RAY_TYPE_RADIANCE,
-               float3_as_args(prd.result),
+    optixTrace(params.handle, origin, direction, params.scene_epsilon, 1e16f, 0.0f, OptixVisibilityMask(1),
+               OPTIX_RAY_FLAG_NONE, RAY_TYPE_RADIANCE, RAY_TYPE_COUNT, RAY_TYPE_RADIANCE, float3_as_args(prd.result),
                /* Can't use __float_as_uint() because it returns rvalue but
                   payload requires a lvalue */
-               reinterpret_cast<unsigned int &>(prd.importance),
-               reinterpret_cast<unsigned int &>(prd.depth));
+               reinterpret_cast<unsigned int &>(prd.importance), reinterpret_cast<unsigned int &>(prd.depth));
 
     return prd.result;
 }
@@ -103,8 +95,7 @@ static __device__ void phongShadowed()
     setOcclusionPRD(prd);
 }
 
-static __device__ void phongShade(float3 p_Kd, float3 p_Ka, float3 p_Ks,
-                                  float3 p_Kr, float p_phong_exp,
+static __device__ void phongShade(float3 p_Kd, float3 p_Ka, float3 p_Ks, float3 p_Kr, float p_phong_exp,
                                   float3 p_normal)
 {
     RadiancePRD prd = getRadiancePRD();
@@ -126,15 +117,13 @@ static __device__ void phongShade(float3 p_Kd, float3 p_Ka, float3 p_Ks,
 
     // cast shadow ray
     float3 light_attenuation = make_float3(static_cast<float>(nDl > 0.0f));
-    if (shadows>0.f && nDl > 0.f)
+    if (shadows > 0.f && nDl > 0.f)
     {
         OcclusionPRD shadow_prd;
         shadow_prd.attenuation = make_float3(1.0f);
 
-        optixTrace(params.handle, hit_point, L, 0.01f, Ldist, 0.0f,
-                   OptixVisibilityMask(1), OPTIX_RAY_FLAG_NONE,
-                   RAY_TYPE_OCCLUSION, RAY_TYPE_COUNT, RAY_TYPE_OCCLUSION,
-                   float3_as_args(shadow_prd.attenuation));
+        optixTrace(params.handle, hit_point, L, 0.01f, Ldist, 0.0f, OptixVisibilityMask(1), OPTIX_RAY_FLAG_NONE,
+                   RAY_TYPE_OCCLUSION, RAY_TYPE_COUNT, RAY_TYPE_OCCLUSION, float3_as_args(shadow_prd.attenuation));
 
         light_attenuation = shadow_prd.attenuation;
     }
@@ -168,8 +157,7 @@ static __device__ void phongShade(float3 p_Kd, float3 p_Ka, float3 p_Ks,
         {
             float3 R = reflect(ray_dir, p_normal);
 
-            result += p_Kr *
-                      traceRadianceRay(hit_point, R, new_depth, new_importance);
+            result += p_Kr * traceRadianceRay(hit_point, R, new_depth, new_importance);
         }
     }
 
@@ -184,14 +172,11 @@ extern "C" __global__ void __closesthit__radiance()
     const Phong &phong = sbt_data->shading.phong;
 
     const float3 object_normal =
-        make_float3(__uint_as_float(optixGetAttribute_0()),
-                    __uint_as_float(optixGetAttribute_1()),
+        make_float3(__uint_as_float(optixGetAttribute_0()), __uint_as_float(optixGetAttribute_1()),
                     __uint_as_float(optixGetAttribute_2()));
 
-    const float3 world_normal =
-        normalize(optixTransformNormalFromObjectToWorldSpace(object_normal));
-    const float3 normal =
-        faceforward(world_normal, -optixGetWorldRayDirection(), world_normal);
+    const float3 world_normal = normalize(optixTransformNormalFromObjectToWorldSpace(object_normal));
+    const float3 normal = faceforward(world_normal, -optixGetWorldRayDirection(), world_normal);
     phongShade(phong.Kd, phong.Ka, phong.Ks, phong.Kr, phong.phong_exp, normal);
 }
 

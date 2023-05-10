@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../CommonStructs.h"
+#include "../../OptiXCommonStructs.h"
 #include "../Environment.h"
 #include "../Helpers.h"
 #include "../Random.h"
@@ -27,11 +27,6 @@
 using namespace optix;
 
 const float DEFAULT_VOLUME_SHADOW_THRESHOLD = 0.1f;
-
-struct PerRayData_shadow
-{
-    float3 attenuation;
-};
 
 // System
 rtDeclareVariable(float3, bad_color, , );

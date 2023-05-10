@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../CommonStructs.h"
+#include "../../OptiXCommonStructs.h"
 #include "IntersectionRefinement.h"
 #include <optix.h>
 #include <optixu/optixu_aabb_namespace.h>
@@ -56,21 +56,17 @@ rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(PerRayData_radiance, prd, rtPayload, );
 rtDeclareVariable(unsigned long, simulation_idx, attribute simulation_idx, );
 
-static __device__ void computeWPosDerivatives(float3& ddxwpos, float3& ddywpos,
-                                              float3 p0, float3 p1, float3 p2,
-                                              float2 betaDerivative,
-                                              float2 gammaDerivative)
+static __device__ void computeWPosDerivatives(float3& ddxwpos, float3& ddywpos, float3 p0, float3 p1, float3 p2,
+                                              float2 betaDerivative, float2 gammaDerivative)
 {
-    ddxwpos = p1 * betaDerivative.x + p2 * gammaDerivative.x +
-              p0 * (-betaDerivative.x - gammaDerivative.x);
-    ddywpos = p1 * betaDerivative.y + p2 * gammaDerivative.y +
-              p0 * (-betaDerivative.y - gammaDerivative.y);
+    ddxwpos = p1 * betaDerivative.x + p2 * gammaDerivative.x + p0 * (-betaDerivative.x - gammaDerivative.x);
+    ddywpos = p1 * betaDerivative.y + p2 * gammaDerivative.y + p0 * (-betaDerivative.y - gammaDerivative.y);
 }
 
-static __device__ bool intersect_triangle_filtered(
-    const Ray& ray, const float3& p0, const float3& p1, const float3& p2,
-    const float3& rayDdx, const float3& rayDdy, float3& n, float& t,
-    float& beta, float& gamma, float2& betaDerivative, float2& gammaDerivative)
+static __device__ bool intersect_triangle_filtered(const Ray& ray, const float3& p0, const float3& p1, const float3& p2,
+                                                   const float3& rayDdx, const float3& rayDdy, float3& n, float& t,
+                                                   float& beta, float& gamma, float2& betaDerivative,
+                                                   float2& gammaDerivative)
 {
     const float3 e0 = p1 - p0;
     const float3 e1 = p0 - p2;
@@ -87,16 +83,11 @@ static __device__ bool intersect_triangle_filtered(
     gamma = dot(i, e0);
     t = dot(n, e2);
 
-    if (!((t < ray.tmax) & (t > ray.tmin) & (beta >= 0.0f) & (gamma >= 0.0f) &
-          (beta + gamma <= 1)))
+    if (!((t < ray.tmax) & (t > ray.tmin) & (beta >= 0.0f) & (gamma >= 0.0f) & (beta + gamma <= 1)))
         return false;
 
-    const float3 differentialX =
-        cross(rayDdx, e2) +
-        cross(ray.direction, -e2 * dot(rayDdx, n) / NdotRay);
-    const float3 differentialY =
-        cross(rayDdy, e2) +
-        cross(ray.direction, -e2 * dot(rayDdy, n) / NdotRay);
+    const float3 differentialX = cross(rayDdx, e2) + cross(ray.direction, -e2 * dot(rayDdx, n) / NdotRay);
+    const float3 differentialY = cross(rayDdy, e2) + cross(ray.direction, -e2 * dot(rayDdy, n) / NdotRay);
     betaDerivative.x = dot(differentialX, e1);
     betaDerivative.y = dot(differentialY, e1);
     gammaDerivative.x = dot(differentialX, e0);
@@ -119,8 +110,7 @@ static __device__ void meshIntersect(int primIdx)
     float t;
     float beta, gamma;
     float2 betaDerivative, gammaDerivative;
-    if (intersect_triangle_filtered(ray, p0, p1, p2, prd.rayDdx, prd.rayDdy, n,
-                                    t, beta, gamma, betaDerivative,
+    if (intersect_triangle_filtered(ray, p0, p1, p2, prd.rayDdx, prd.rayDdy, n, t, beta, gamma, betaDerivative,
                                     gammaDerivative))
     {
         if (rtPotentialIntersection(t))
@@ -136,15 +126,13 @@ static __device__ void meshIntersect(int primIdx)
                 float3 n0 = normal_buffer[v_idx.x];
                 float3 n1 = normal_buffer[v_idx.y];
                 float3 n2 = normal_buffer[v_idx.z];
-                shading_normal = normalize(n1 * beta + n2 * gamma +
-                                           n0 * (1.f - beta - gamma));
+                shading_normal = normalize(n1 * beta + n2 * gamma + n0 * (1.f - beta - gamma));
             }
 
             if (texcoord_buffer.size() == 0)
             {
                 texcoord = make_float2(0.f, 0.f);
-                computeWPosDerivatives(ddxWPos, ddyWPos, p0, p1, p2,
-                                       betaDerivative, gammaDerivative);
+                computeWPosDerivatives(ddxWPos, ddyWPos, p0, p1, p2, betaDerivative, gammaDerivative);
             }
             else
             {
@@ -154,18 +142,14 @@ static __device__ void meshIntersect(int primIdx)
 
                 texcoord = t1 * beta + t2 * gamma + t0 * (1.f - beta - gamma);
 
-                ddx = t1 * betaDerivative.x + t2 * gammaDerivative.x +
-                      t0 * (-betaDerivative.x - gammaDerivative.x);
-                ddy = t1 * betaDerivative.y + t2 * gammaDerivative.y +
-                      t0 * (-betaDerivative.y - gammaDerivative.y);
+                ddx = t1 * betaDerivative.x + t2 * gammaDerivative.x + t0 * (-betaDerivative.x - gammaDerivative.x);
+                ddy = t1 * betaDerivative.y + t2 * gammaDerivative.y + t0 * (-betaDerivative.y - gammaDerivative.y);
 
-                computeWPosDerivatives(ddxWPos, ddyWPos, p0, p1, p2,
-                                       betaDerivative, gammaDerivative);
+                computeWPosDerivatives(ddxWPos, ddyWPos, p0, p1, p2, betaDerivative, gammaDerivative);
             }
 
             if (DO_REFINE)
-                refine_and_offset_hitpoint(ray.origin + t * ray.direction,
-                                           ray.direction, geometric_normal, p0,
+                refine_and_offset_hitpoint(ray.origin + t * ray.direction, ray.direction, geometric_normal, p0,
                                            back_hit_point, front_hit_point);
             simulation_idx = 0;
             rtReportIntersection(0);

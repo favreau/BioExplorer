@@ -94,6 +94,12 @@ set(BRAYNSOPTIX6ENGINE_HEADERS
   OptiXVolume.h
 )
 
+set(BRAYNSOPTIX6ENGINE_PUBLIC_HEADERS
+  OptiXTypes.h
+  OptiXContext.h
+  OptiXCommonStructs.h
+)
+
 set(BRAYNSOPTIX6ENGINE_LINK_LIBRARIES
     PRIVATE braynsEngine glm braynsCommon braynsParameters ${OptiX6_LIBRARIES})
 

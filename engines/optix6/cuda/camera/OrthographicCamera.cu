@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../CommonStructs.h"
+#include "../../OptiXCommonStructs.h"
 #include "../Helpers.h"
 #include "../Random.h"
 

@@ -19,6 +19,7 @@
  */
 
 #include "OptiXCamera.h"
+#include "OptiXCameraProgram.h"
 
 #include <brayns/common/log.h>
 

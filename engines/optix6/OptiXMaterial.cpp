@@ -20,7 +20,7 @@
 
 #include "OptiXMaterial.h"
 
-#include "CommonStructs.h"
+#include "OptiXCommonStructs.h"
 #include "OptiXContext.h"
 
 #include <brayns/common/log.h>

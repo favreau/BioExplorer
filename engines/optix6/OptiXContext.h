@@ -20,13 +20,12 @@
 
 #pragma once
 
+#include "OptiXTypes.h"
+
 #include <brayns/common/types.h>
 
 #include <optixu/optixpp_namespace.h>
 
-#include "OptiXCameraProgram.h"
-
-#include <memory>
 #include <mutex>
 #include <unordered_map>
 

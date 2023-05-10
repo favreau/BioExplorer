@@ -20,6 +20,7 @@
 
 #include "OptiXContext.h"
 #include "Logs.h"
+#include "OptiXCameraProgram.h"
 #include "OptiXTypes.h"
 #include "OptiXUtils.h"
 

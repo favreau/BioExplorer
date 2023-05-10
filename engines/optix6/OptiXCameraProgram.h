@@ -45,14 +45,11 @@ public:
      * @param camera The main brayns camera
      * @param context The OptiX context
      */
-    virtual void commit(const OptiXCamera& camera,
-                        ::optix::Context context) = 0;
+    virtual void commit(const OptiXCamera& camera, ::optix::Context context) = 0;
 
 protected:
     ::optix::Program _rayGenerationProgram{nullptr};
     ::optix::Program _missProgram{nullptr};
     ::optix::Program _exceptionProgram{nullptr};
 };
-
-using OptiXCameraProgramPtr = std::shared_ptr<OptiXCameraProgram>;
 } // namespace brayns
