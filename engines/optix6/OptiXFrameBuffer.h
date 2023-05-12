@@ -50,7 +50,6 @@ public:
 
 private:
     void _cleanup();
-    void _recreate();
     void _mapUnsafe();
     void _unmapUnsafe();
 

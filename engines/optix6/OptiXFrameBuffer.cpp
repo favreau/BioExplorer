@@ -185,7 +185,7 @@ void OptiXFrameBuffer::setAccumulation(const bool accumulation)
     if (_accumulation != accumulation)
     {
         FrameBuffer::setAccumulation(accumulation);
-        _recreate();
+        resize(_frameSize);
     }
 }
 
