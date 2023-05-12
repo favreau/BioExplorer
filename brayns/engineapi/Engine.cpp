@@ -31,7 +31,6 @@
 
 namespace brayns
 {
-
 Engine::Engine(ParametersManager& parametersManager)
     : _parametersManager(parametersManager)
 {
@@ -110,6 +109,7 @@ void Engine::addRendererType(const std::string& name, const PropertyMap& propert
 {
     _parametersManager.getRenderingParameters().addRenderer(name);
     getRenderer().setProperties(name, properties);
+    _rendererTypes.push_back(name);
 }
 
 void Engine::addCameraType(const std::string& name, const PropertyMap& properties)

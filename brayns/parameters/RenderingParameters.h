@@ -74,6 +74,8 @@ public:
        Light source follow camera origin
     */
     bool getHeadLight() const { return _headLight; }
+    void setHeadLight(const bool value) { _updateValue(_headLight, value); }
+
     /** If the rendering should be refined by accumulating multiple passes */
     bool getAccumulation() const { return _accumulation; }
     /**

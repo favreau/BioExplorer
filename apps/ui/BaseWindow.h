@@ -143,8 +143,13 @@ protected:
     std::chrono::time_point<std::chrono::steady_clock> _chrono;
 
 private:
+    strings _rendererTypes;
+    uint64_t _currentRendererTypeIndex{0};
+
     void _exitApplication();
     void _toggleFrameBuffer();
+    void _toggleRendererType();
+    void _toggleHeadLight();
 
     // ------------------------------------------------------------------
     // GLUT camera helper code

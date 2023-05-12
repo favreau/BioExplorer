@@ -140,6 +140,8 @@ BaseWindow::BaseWindow(Brayns& brayns, const FrameBufferMode frameBufferMode)
     const auto& rp = _brayns.getParametersManager().getRenderingParameters();
     if (rp.getAccumulationType() == AccumulationType::ai_denoised)
         _frameBufferMode = FrameBufferMode::COLOR_F32;
+
+    _rendererTypes = _brayns.getEngine().getRendererTypes();
 }
 
 BaseWindow::~BaseWindow() {}
@@ -440,6 +442,8 @@ void BaseWindow::_registerKeyboardShortcuts()
     auto& keyHandler = _brayns.getKeyboardHandler();
     keyHandler.registerKeyboardShortcut('z', "Switch between depth and color buffers",
                                         std::bind(&BaseWindow::_toggleFrameBuffer, this));
+    keyHandler.registerKeyboardShortcut('n', "Next renderer type", std::bind(&BaseWindow::_toggleRendererType, this));
+    keyHandler.registerKeyboardShortcut('l', "Toggle head light", std::bind(&BaseWindow::_toggleHeadLight, this));
 }
 
 #ifdef __APPLE__
@@ -485,6 +489,26 @@ void BaseWindow::_toggleFrameBuffer()
         _setHint("Post processing: None");
         frameBuffer.setAccumulationType(AccumulationType::linear);
     }
+}
+
+void BaseWindow::_toggleRendererType()
+{
+    ++_currentRendererTypeIndex;
+    _currentRendererTypeIndex = _currentRendererTypeIndex % _rendererTypes.size();
+    const auto rendererType = _rendererTypes[_currentRendererTypeIndex];
+    auto& rp = _brayns.getParametersManager().getRenderingParameters();
+    rp.setCurrentRenderer(rendererType);
+    _setHint("Renderer: [" + rendererType + "]");
+}
+
+void BaseWindow::_toggleHeadLight()
+{
+    auto& rp = _brayns.getParametersManager().getRenderingParameters();
+    rp.setHeadLight(!rp.getHeadLight());
+    std::string hint = "Head light: [";
+    hint += (rp.getHeadLight() ? "ON" : "OFF");
+    hint += "]";
+    _setHint(hint);
 }
 
 void BaseWindow::_setHint(const std::string& message, const uint64_t milliseconds)

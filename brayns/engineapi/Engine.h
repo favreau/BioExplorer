@@ -27,7 +27,6 @@
 
 namespace brayns
 {
-
 /**
  * Abstract implementation of the ray-tracing engine. What we call the
  * ray-tracing engine is a 3rd party acceleration library, typically OSPRay,
@@ -141,6 +140,8 @@ public:
      */
     void addRendererType(const std::string& name, const PropertyMap& properties = {});
 
+    const strings& getRendererTypes() const { return _rendererTypes; };
+
     /**
      * Add a new camera type with optional properties. The camera registration
      * for a concrete engine is specific to the actual engine, e.g.
@@ -155,6 +156,7 @@ protected:
     RendererPtr _renderer;
     std::vector<FrameBufferPtr> _frameBuffers;
     Statistics _statistics;
+    strings _rendererTypes;
 
     bool _keepRunning{true};
 };
