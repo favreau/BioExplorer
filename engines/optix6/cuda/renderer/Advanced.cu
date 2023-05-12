@@ -19,8 +19,9 @@
 #include "../../OptiXCommonStructs.h"
 #include "../Environment.h"
 #include "../Helpers.h"
-#include "../Random.h"
-#include "TransferFunction.h"
+
+#include "../Random.cuh"
+#include "TransferFunction.cuh"
 
 #include <brayns/common/CommonTypes.h>
 

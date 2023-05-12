@@ -98,6 +98,8 @@ set(BRAYNSOPTIX6ENGINE_PUBLIC_HEADERS
   OptiXTypes.h
   OptiXContext.h
   OptiXCommonStructs.h
+  cuda/renderer/TransferFunction.cuh
+  cuda/Random.cuh
 )
 
 set(BRAYNSOPTIX6ENGINE_LINK_LIBRARIES

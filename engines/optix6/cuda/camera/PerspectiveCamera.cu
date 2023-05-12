@@ -19,7 +19,8 @@
 
 #include "../../OptiXCommonStructs.h"
 #include "../Helpers.h"
-#include "../Random.h"
+
+#include "../Random.cuh"
 
 #include <brayns/common/CommonTypes.h>
 

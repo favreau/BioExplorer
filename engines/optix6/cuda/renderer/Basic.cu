@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "TransferFunction.h"
+#include "TransferFunction.cuh"
 
 #include <optix_world.h>
 
