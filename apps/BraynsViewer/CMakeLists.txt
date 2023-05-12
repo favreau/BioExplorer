@@ -14,4 +14,4 @@ set(BRAYNSVIEWER_LINK_LIBRARIES
   PUBLIC brayns braynsCommon braynsIO braynsParameters braynsUI braynsRockets ${OPENGL_gl_LIBRARY}
 )
 
-common_application(braynsViewer)
+common_application(braynsViewer GUI NOHELP)
