@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../OptiXCommonStructs.h"
-#include "../Helpers.h"
-
-#include "../Random.cuh"
+// #include "Helpers.h"
+#include <brayns/OptiXCommonStructs.h>
+#include <engines/optix6/cuda/Helpers.cuh>
+#include <engines/optix6/cuda/Random.cuh>
 
 #include <optix.h>
 #include <optixu/optixu_math_namespace.h>

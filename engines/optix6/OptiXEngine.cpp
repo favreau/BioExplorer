@@ -28,7 +28,6 @@
 #include "OptiXCamera.h"
 #include "OptiXEngine.h"
 #include "OptiXFrameBuffer.h"
-#include "OptiXOpenDeckCamera.h"
 #include "OptiXOrthographicCamera.h"
 #include "OptiXPerspectiveCamera.h"
 #include "OptiXRenderer.h"
@@ -111,23 +110,6 @@ void OptiXEngine::_createCameras()
         auto camera = std::make_shared<OptiXOrthographicCamera>();
         context.addCamera("orthographic", camera);
         addCameraType("orthographic", properties);
-    }
-
-    {
-        PropertyMap properties;
-        properties.setProperty({"segmentId", 7});
-        properties.setProperty({"interpupillaryDistance", 0.065, {"Eye separation"}});
-        properties.setProperty({"headPosition", std::array<double, 3>{{0.0, 2.0, 0.0}}});
-        properties.setProperty({"headRotation", std::array<double, 4>{{0.0, 0.0, 0.0, 1.0}}});
-        if (isStereo)
-        {
-            properties.setProperty(stereoProperty);
-            properties.setProperty(eyeSeparation);
-            properties.setProperty({"zeroParallaxPlane", 1., {"Zero parallax plane"}});
-        }
-
-        context.addCamera("opendeck", std::make_shared<OptiXOpenDeckCamera>());
-        addCameraType("opendeck", properties);
     }
 }
 

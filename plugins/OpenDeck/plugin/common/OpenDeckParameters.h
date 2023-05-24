@@ -24,8 +24,8 @@
 
 namespace brayns
 {
-constexpr auto PARAM_RESOLUTION_SCALING = "resolutionScaling";
-constexpr auto PARAM_CAMERA_SCALING = "cameraScaling";
+constexpr auto PARAM_RESOLUTION_SCALING = "resolution-scaling";
+constexpr auto PARAM_CAMERA_SCALING = "camera-scaling";
 
 class OpenDeckParameters : public BaseObject
 {

@@ -19,8 +19,8 @@
 
 #include <optix_world.h>
 
-#include "Environment.h"
-#include "Helpers.h"
+#include "Environment.cuh"
+#include "Helpers.cuh"
 
 struct PerRayData_radiance
 {

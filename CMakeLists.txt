@@ -103,8 +103,10 @@ endif()
 common_find_package(ospray 1.8 SYSTEM)
 option(BRAYNS_OSPRAY_ENABLED "Activate OSPRay rendering engine" ${OSPRAY_FOUND})
 
+set(OSPRAY_FOUND 0)
 if(BRAYNS_OSPRAY_ENABLED)
   common_find_package(ospray 1.8 SYSTEM REQUIRED)
+  set(OSPRAY_FOUND 1)
 else()
   common_find_package_disable(ospray)
 endif()
@@ -113,15 +115,18 @@ endif()
 option(BRAYNS_OPTIX6_ENABLED "Activate OptiX 6.x rendering engine" OFF)
 option(BRAYNS_OPTIX6_TESTS_ENABLED "Activate OptiX tests" OFF)
 
-# OptiX 7.x
-option(BRAYNS_OPTIX7_ENABLED "Activate OptiX 7.x rendering engine" OFF)
-
+set(OPTIX6_FOUND 0)
 if(BRAYNS_OPTIX6_ENABLED)
   add_subdirectory(engines/optix6)
+  set(OPTIX6_FOUND 1)
 endif()
 
+# OptiX 7.x
+option(BRAYNS_OPTIX7_ENABLED "Activate OptiX 7.x rendering engine" OFF)
+set(OPTIX7_FOUND 0)
 if(BRAYNS_OPTIX7_ENABLED)
   add_subdirectory(engines/optix7)
+  set(OPTIX7_FOUND 1)
 endif()
 
 # Mesh loading

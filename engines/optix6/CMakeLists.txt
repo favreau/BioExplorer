@@ -30,7 +30,6 @@ set(BRAYNSOPTIX6ENGINE_OMIT_VERSION_HEADERS ON)
 set(BRAYNSOPTIX6ENGINE_CU
   cuda/camera/PerspectiveCamera.cu
   cuda/camera/OrthographicCamera.cu
-  cuda/camera/OpenDeckCamera.cu
   cuda/Constantbg.cu
   cuda/geometry/Cones.cu
   cuda/geometry/Cylinders.cu
@@ -55,7 +54,6 @@ set(BRAYNSOPTIX6ENGINE_SOURCES
   OptiXCamera.cpp
   OptiXPerspectiveCamera.cpp
   OptiXOrthographicCamera.cpp
-  OptiXOpenDeckCamera.cpp
   OptiXRenderer.cpp
   OptiXEngine.cpp
   OptiXMaterial.cpp
@@ -70,7 +68,6 @@ set_source_files_properties(
   OptiXCamera.cpp
   OptiXPerspectiveCamera.cpp
   OptiXOrthographicCamera.cpp
-  OptiXOpenDeckCamera.cpp
   OptiXRenderer.cpp
   OptiXEngine.cpp
   OptiXMaterial.cpp
@@ -86,7 +83,6 @@ set(BRAYNSOPTIX6ENGINE_HEADERS
   OptiXScene.h
   OptiXCamera.h
   OptiXCameraProgram.h
-  OptiXOpenDeckCamera.h
   OptiXOrthographicCamera.h
   OptiXPerspectiveCamera.h
   OptiXRenderer.h
@@ -100,6 +96,8 @@ set(BRAYNSOPTIX6ENGINE_PUBLIC_HEADERS
   OptiXCommonStructs.h
   cuda/renderer/TransferFunction.cuh
   cuda/Random.cuh
+  cuda/Helpers.cuh
+  cuda/Environment.cuh
 )
 
 set(BRAYNSOPTIX6ENGINE_LINK_LIBRARIES

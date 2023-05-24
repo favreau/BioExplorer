@@ -19,19 +19,31 @@
 
 #include "OpenDeckPlugin.h"
 
-#include <brayns/common/log.h>
+#include <plugin/common/Logs.h>
+
 #include <brayns/engineapi/Camera.h>
 #include <brayns/engineapi/Engine.h>
+#include <brayns/parameters/ParametersManager.h>
 #include <brayns/pluginapi/Plugin.h>
+
+#ifdef USE_OPTIX6
+#include <engines/optix6/OptiXContext.h>
+#include <plugin/optix6/OptiXCylindricStereoCamera.h>
+#endif
 
 namespace brayns
 {
 namespace
 {
+const std::string CAMERA_CYLINDRIC = "cylindric";
+const std::string CAMERA_CYLINDRIC_STEREO = "cylindricStereo";
+const std::string CAMERA_CYLINDRIC_STEREO_TRACKED = "cylindricStereoTracked";
+
 constexpr uint32_t openDeckWallResX = 11940u;
 constexpr uint32_t openDeckWallResY = 3424u;
 constexpr uint32_t openDeckFloorResX = 4096u;
 constexpr uint32_t openDeckFloorResY = 2125u;
+
 constexpr char leftWallBufferName[] = "0L";
 constexpr char rightWallBufferName[] = "0R";
 constexpr char leftFloorBufferName[] = "1L";
@@ -95,8 +107,8 @@ PropertyMap getCylindricStereoTrackedProperties(const OpenDeckParameters& params
 }
 } // namespace
 
-OpenDeckPlugin::OpenDeckPlugin(OpenDeckParameters&& params)
-    : _params(std::move(params))
+OpenDeckPlugin::OpenDeckPlugin(const OpenDeckParameters& params)
+    : _params(params)
 {
     if (_params.getResolutionScaling() > 1.0f || _params.getResolutionScaling() <= 0.0f)
     {
@@ -111,28 +123,53 @@ OpenDeckPlugin::OpenDeckPlugin(OpenDeckParameters&& params)
         Vector2ui(openDeckWallResX * _params.getResolutionScaling(), openDeckWallResY * _params.getResolutionScaling());
     _floorRes = Vector2ui(openDeckFloorResX * _params.getResolutionScaling(),
                           openDeckFloorResY * _params.getResolutionScaling());
+    PLUGIN_INFO("Wall resolution : " << _wallRes << "(" << _params.getResolutionScaling() << ")");
+    PLUGIN_INFO("Floor resolution: " << _floorRes);
 }
 
 void OpenDeckPlugin::init()
 {
     auto& engine = _api->getEngine();
+    auto& params = engine.getParametersManager().getApplicationParameters();
+    const auto& engineName = params.getEngine();
 #ifdef BRAYNS_USE_OSPRAY
-    engine.addCameraType("cylindric");
-    engine.addCameraType("cylindricStereo", getCylindricStereoProperties());
-    engine.addCameraType("cylindricStereoTracked", getCylindricStereoTrackedProperties(_params));
+    if (engineName == ENGINE_OSPRAY)
+    {
+        engine.addCameraType(CAMERA_CYLINDRIC);
+        engine.addCameraType(CAMERA_CYLINDRIC_STEREO, getCylindricStereoProperties());
+        engine.addCameraType(CAMERA_CYLINDRIC_STEREO_TRACKED, getCylindricStereoTrackedProperties(_params));
+        FrameBufferPtr frameBuffer = engine.createFrameBuffer(leftWallBufferName, _wallRes, FrameBufferFormat::rgba_i8);
+        engine.addFrameBuffer(frameBuffer);
+        frameBuffer = engine.createFrameBuffer(rightWallBufferName, _wallRes, FrameBufferFormat::rgba_i8);
+        engine.addFrameBuffer(frameBuffer);
+        frameBuffer = engine.createFrameBuffer(leftFloorBufferName, _floorRes, FrameBufferFormat::rgba_i8);
+        engine.addFrameBuffer(frameBuffer);
+        frameBuffer = engine.createFrameBuffer(rightFloorBufferName, _floorRes, FrameBufferFormat::rgba_i8);
+        engine.addFrameBuffer(frameBuffer);
+    }
 #endif
-    FrameBufferPtr frameBuffer = engine.createFrameBuffer(leftWallBufferName, _wallRes, FrameBufferFormat::rgba_i8);
-    engine.addFrameBuffer(frameBuffer);
-    frameBuffer = engine.createFrameBuffer(rightWallBufferName, _wallRes, FrameBufferFormat::rgba_i8);
-    engine.addFrameBuffer(frameBuffer);
-    frameBuffer = engine.createFrameBuffer(leftFloorBufferName, _floorRes, FrameBufferFormat::rgba_i8);
-    engine.addFrameBuffer(frameBuffer);
-    frameBuffer = engine.createFrameBuffer(rightFloorBufferName, _floorRes, FrameBufferFormat::rgba_i8);
-    engine.addFrameBuffer(frameBuffer);
+#ifdef BRAYNS_USE_OSPRAY
+    if (engineName == ENGINE_OPTIX_6)
+    {
+        OptiXContext& context = OptiXContext::get();
+        context.addCamera(CAMERA_CYLINDRIC_STEREO, std::make_shared<OptiXCylindricStereoCamera>());
+        engine.addCameraType(CAMERA_CYLINDRIC_STEREO, getCylindricStereoProperties());
+    }
+#endif
 }
 
 extern "C" brayns::ExtensionPlugin* brayns_plugin_create(const int argc, const char** argv)
 {
+    PLUGIN_INFO("");
+    PLUGIN_INFO("   _|_|                                  _|_|_|                        _|      ");
+    PLUGIN_INFO(" _|    _|  _|_|_|      _|_|    _|_|_|    _|    _|    _|_|      _|_|_|  _|  _|  ");
+    PLUGIN_INFO(" _|    _|  _|    _|  _|_|_|_|  _|    _|  _|    _|  _|_|_|_|  _|        _|_|    ");
+    PLUGIN_INFO(" _|    _|  _|    _|  _|        _|    _|  _|    _|  _|        _|        _|  _|  ");
+    PLUGIN_INFO("   _|_|    _|_|_|      _|_|_|  _|    _|  _|_|_|      _|_|_|    _|_|_|  _|    _|");
+    PLUGIN_INFO("           _|                                                                  ");
+    PLUGIN_INFO("           _|                                                                  ");
+    PLUGIN_INFO("");
+
     brayns::OpenDeckParameters params;
     if (!params.getPropertyMap().parse(argc, argv))
         return nullptr;
@@ -142,7 +179,7 @@ extern "C" brayns::ExtensionPlugin* brayns_plugin_create(const int argc, const c
     }
     catch (const std::runtime_error& exc)
     {
-        std::cerr << exc.what() << std::endl;
+        PLUGIN_ERROR(exc.what());
         return nullptr;
     }
 }

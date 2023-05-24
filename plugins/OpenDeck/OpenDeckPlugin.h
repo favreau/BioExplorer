@@ -19,7 +19,9 @@
 
 #pragma once
 
-#include "OpenDeckParameters.h"
+#include "Defines.h"
+
+#include <plugin/common/OpenDeckParameters.h>
 
 #include <brayns/common/types.h>
 #include <brayns/pluginapi/ExtensionPlugin.h>
@@ -29,7 +31,7 @@ namespace brayns
 class OpenDeckPlugin : public ExtensionPlugin
 {
 public:
-    OpenDeckPlugin(OpenDeckParameters&& params);
+    OpenDeckPlugin(const OpenDeckParameters& params);
 
     void init() final;
 

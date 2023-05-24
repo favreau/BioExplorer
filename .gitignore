@@ -2,7 +2,9 @@
 Build/
 build/
 debug/
+Debug/
 release/
+Release/
 Brion/
 Lunchbox/
 MVDTool/

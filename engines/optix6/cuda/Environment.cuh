@@ -19,20 +19,26 @@
 
 #pragma once
 
-#include <memory>
+#include <optix_world.h>
 
-#include <optixu/optixpp_namespace.h>
+#include "Helpers.cuh"
 
-#include "OptiXCameraProgram.h"
+rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
+rtDeclareVariable(float3, bgColor, , );
+rtDeclareVariable(int, envmap, , );
+rtDeclareVariable(uint, use_envmap, , );
+rtDeclareVariable(uint, showBackground, , );
 
-namespace brayns
+static __device__ inline float3 getEnvironmentColor()
 {
-class OptiXOpenDeckCamera : public OptiXCameraProgram
-{
-public:
-    OptiXOpenDeckCamera();
-    ~OptiXOpenDeckCamera() final = default;
-
-    void commit(const OptiXCamera& camera, ::optix::Context context) final;
-};
-} // namespace brayns
+    if (showBackground)
+    {
+        if (use_envmap)
+        {
+            const float2 uv = getEquirectangularUV(ray.direction);
+            return linearToSRGB(tonemap(make_float3(optix::rtTex2D<float4>(envmap, uv.x, uv.y))));
+        }
+        return bgColor;
+    }
+    return make_float3(0.f);
+}

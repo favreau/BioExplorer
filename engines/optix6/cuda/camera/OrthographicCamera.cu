@@ -18,8 +18,8 @@
  */
 
 #include "../../OptiXCommonStructs.h"
-#include "../Helpers.h"
 
+#include "../Helpers.cuh"
 #include "../Random.cuh"
 
 #include <optix.h>

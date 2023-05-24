@@ -52,6 +52,8 @@ const std::string CONTEXT_CAMERA_W = "W";
 const std::string CONTEXT_CAMERA_APERTURE_RADIUS = "aperture_radius";
 const std::string CONTEXT_CAMERA_FOCAL_SCALE = "focal_scale";
 const std::string CONTEXT_CAMERA_FOVY = "fovy";
+const std::string CONTEXT_CAMERA_ASPECT = "aspect";
+const std::string CONTEXT_CAMERA_OFFSET = "offset";
 
 // Perspective
 const std::string CUDA_FUNC_PERSPECTIVE_CAMERA = "perspectiveCamera";
@@ -61,15 +63,6 @@ const std::string CONTEXT_CAMERA_IPD = "interpupillaryDistance";
 // Orthographic
 const std::string CUDA_FUNC_ORTHOGRAPHIC_CAMERA = "orthographicCamera";
 const std::string CONTEXT_CAMERA_HEIGHT = "height";
-
-// OpenDeck
-const std::string CUDA_FUNC_OPENDECK_CAMERA = "openDeckCamera";
-const std::string CONTEXT_CAMERA_SEGMENT_ID = "segmentID";
-const std::string CONTEXT_CAMERA_HEAD_POS = "headPos";
-const std::string CONTEXT_CAMERA_HEAD_UVEC = "headUVec";
-const std::string CONTEXT_CAMERA_HALF_IPD = "half_ipd";
-const std::string CONTEXT_CAMERA_OFFSET = "offset";
-const std::string CONTEXT_CAMERA_ASPECT = "aspect";
 
 // Clipping planes
 const std::string CONTEXT_CLIP_PLANES = "clip_planes";

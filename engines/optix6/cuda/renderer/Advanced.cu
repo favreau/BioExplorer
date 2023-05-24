@@ -17,10 +17,11 @@
  */
 
 #include "../../OptiXCommonStructs.h"
-#include "../Environment.h"
-#include "../Helpers.h"
 
+#include "../Environment.cuh"
+#include "../Helpers.cuh"
 #include "../Random.cuh"
+
 #include "TransferFunction.cuh"
 
 #include <brayns/common/CommonTypes.h>

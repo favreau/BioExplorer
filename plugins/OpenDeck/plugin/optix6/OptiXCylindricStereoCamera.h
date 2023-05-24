@@ -19,26 +19,16 @@
 
 #pragma once
 
-#include <optix_world.h>
+#include <engines/optix6/OptiXCameraProgram.h>
 
-#include "Helpers.h"
-
-rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
-rtDeclareVariable(float3, bgColor, , );
-rtDeclareVariable(int, envmap, , );
-rtDeclareVariable(uint, use_envmap, , );
-rtDeclareVariable(uint, showBackground, , );
-
-static __device__ inline float3 getEnvironmentColor()
+namespace brayns
 {
-    if (showBackground)
-    {
-        if (use_envmap)
-        {
-            const float2 uv = getEquirectangularUV(ray.direction);
-            return linearToSRGB(tonemap(make_float3(optix::rtTex2D<float4>(envmap, uv.x, uv.y))));
-        }
-        return bgColor;
-    }
-    return make_float3(0.f);
-}
+class OptiXCylindricStereoCamera : public OptiXCameraProgram
+{
+public:
+    OptiXCylindricStereoCamera();
+    ~OptiXCylindricStereoCamera() final = default;
+
+    void commit(const OptiXCamera& camera, ::optix::Context context) final;
+};
+} // namespace brayns

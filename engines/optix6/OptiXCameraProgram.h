@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include <optixu/optixpp_namespace.h>
 
 namespace brayns
