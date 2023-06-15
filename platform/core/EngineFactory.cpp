@@ -37,7 +37,8 @@ namespace core
 /** Supported engines */
 std::map<std::string, std::string> SUPPORTED_ENGINES = {{ENGINE_OSPRAY, "OSPRayEngine"},
                                                         {ENGINE_OPTIX_6, "OptiX6Engine"},
-                                                        {ENGINE_OPTIX_7, "OptiX7Engine"}};
+                                                        {ENGINE_OPTIX_7, "OptiX7Engine"},
+                                                        {ENGINE_SOLR, "SolREngine"}};
 
 typedef Engine* (*CreateFuncType)(int, const char**, ParametersManager&);
 

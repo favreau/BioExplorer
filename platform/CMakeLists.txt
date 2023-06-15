@@ -80,6 +80,11 @@ if(PLATFORM_OPTIX7_ENABLED)
   add_subdirectory(engines/optix7_experimental)
 endif()
 
+if(PLATFORM_SOLR_ENABLED)
+  message(STATUS "[Core] Building Sol-R engine")
+  add_subdirectory(engines/solr)
+endif()
+
 # ==============================================================================
 # Applications and libraries
 # ==============================================================================
