@@ -319,8 +319,7 @@ void AbstractCircuitLoader::_filterGIDsWithAreasOfInterest(const uint16_t areasO
 }
 
 ModelDescriptorPtr AbstractCircuitLoader::importCircuit(const std::string &circuitConfiguration,
-                                                        const PropertyMap &properties,
-                                                        const LoaderProgress &callback) const
+                                                        const PropertyMap &properties, LoaderProgress &callback) const
 {
     const auto colorScheme =
         stringToEnum<CircuitColorScheme>(properties.getProperty<std::string>(PROP_CIRCUIT_COLOR_SCHEME.name));
@@ -549,7 +548,7 @@ std::string AbstractCircuitLoader::_getMeshFilenameFromGID(const PropertyMap &pr
 void AbstractCircuitLoader::_importMeshes(const PropertyMap &properties, Model &model, const brain::GIDSet &gids,
                                           const Matrix4fs &transformations, const GIDOffsets &targetGIDOffsets,
                                           const size_ts &layerIds, const size_ts &morphologyTypes,
-                                          const size_ts &electrophysiologyTypes, const LoaderProgress &callback) const
+                                          const size_ts &electrophysiologyTypes, LoaderProgress &callback) const
 {
     MeshLoader meshLoader(_scene);
     const auto morphologyQuality =
@@ -581,7 +580,8 @@ void AbstractCircuitLoader::_importMeshes(const PropertyMap &properties, Model &
         }
         try
         {
-            meshLoader.importMesh(_getMeshFilenameFromGID(properties, gid), LoaderProgress(), model, transformation,
+            LoaderProgress loaderProgress;
+            meshLoader.importMesh(_getMeshFilenameFromGID(properties, gid), loaderProgress, model, transformation,
                                   materialId, quality);
         }
         catch (const std::runtime_error &e)
@@ -777,7 +777,7 @@ float AbstractCircuitLoader::_importMorphologies(const PropertyMap &properties, 
                                                  const Matrix4fs &transformations, const GIDOffsets &targetGIDOffsets,
                                                  CompartmentReportPtr compartmentReport, const size_ts &layerIds,
                                                  const size_ts &morphologyTypes, const size_ts &electrophysiologyTypes,
-                                                 const LoaderProgress &callback, const size_t materialId) const
+                                                 LoaderProgress &callback, const size_t materialId) const
 {
     const auto preSynapticNeuron = properties.getProperty<std::string>(PROP_PRESYNAPTIC_NEURON_GID.name);
     const auto postSynapticNeuron = properties.getProperty<std::string>(PROP_POSTSYNAPTIC_NEURON_GID.name);
@@ -874,7 +874,7 @@ float AbstractCircuitLoader::_importMorphologies(const PropertyMap &properties, 
     return maxDistanceToSoma;
 }
 
-ModelDescriptorPtr AbstractCircuitLoader::importFromBlob(Blob && /*blob*/, const LoaderProgress & /*callback*/,
+ModelDescriptorPtr AbstractCircuitLoader::importFromBlob(Blob && /*blob*/, LoaderProgress & /*callback*/,
                                                          const PropertyMap & /*properties*/) const
 {
     PLUGIN_THROW("Load circuit from memory not supported");

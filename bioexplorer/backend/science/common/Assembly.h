@@ -25,6 +25,8 @@
 #include <science/common/Types.h>
 #include <science/common/shapes/Shape.h>
 
+#include <thread>
+
 namespace bioexplorer
 {
 namespace common
@@ -38,10 +40,10 @@ class Assembly
 public:
     /**
      * @brief Assembly Default constructor
-     * @param scene Scene to which assembly should be added
+     * @param engine Engine to which assembly should be added
      * @param details Details of the assembly
      */
-    Assembly(core::Scene &scene, const details::AssemblyDetails &details);
+    Assembly(core::Engine &engine, const details::AssemblyDetails &details);
 
     /**
      * @brief Destroy the Assembly object
@@ -313,7 +315,24 @@ public:
      */
     void addSynapseEfficacy(const details::SynapseEfficacyDetails &details);
 
+    const core::LoaderProgress &getLoaderProgress();
+
 private:
+    // Define the type for the thread function
+    using ThreadFunction = std::function<void()>;
+
+    template <typename FunctionType, typename... Args>
+    void _startLoadingThread(FunctionType threadFunction, Args &&...args);
+
+    void _loadNeurons(const details::NeuronsDetails &details);
+    void _loadVasculature(const details::VasculatureDetails &details);
+    void _loadSynaptome(const details::SynaptomeDetails &details);
+    void _loadAstrocytes(const details::AstrocytesDetails &details);
+    void _loadAtlas(const details::AtlasDetails &details);
+    void _loadWhiteMatter(const details::WhiteMatterDetails &details);
+    void _loadSynapses(const details::SynapsesDetails &details);
+    void _loadSynapseEfficacy(const details::SynapseEfficacyDetails &details);
+
     void _processInstances(core::ModelDescriptorPtr md, const std::string &name, const size_t occurrences,
                            const core::Vector3d &position, const core::Quaterniond &rotation,
                            const uint64_ts &allowedOccurrences,
@@ -322,6 +341,7 @@ private:
 
     details::AssemblyDetails _details;
     core::Scene &_scene;
+    core::Engine &_engine;
     molecularsystems::ProteinMap _proteins;
     molecularsystems::MembranePtr _membrane{nullptr};
     molecularsystems::RNASequencePtr _rnaSequence{nullptr};
@@ -334,12 +354,18 @@ private:
     connectomics::SynapseEfficacyPtr _synapseEfficacy{nullptr};
     connectomics::WhiteMatterPtr _whiteMatter{nullptr};
     connectomics::SynaptomePtr _synaptome{nullptr};
+    details::NeuronsDetails _neuronDetails;
 
     core::Vector3d _position;
     core::Quaterniond _rotation;
     Vector4ds _clippingPlanes;
     core::ModelDescriptors _modelDescriptors;
     ShapePtr _shape{nullptr};
+
+private:
+    std::thread _loadingThread;
+    core::LoaderProgress _loaderProgress;
+    bool _loadingInProgress{false};
 };
 } // namespace common
 } // namespace bioexplorer

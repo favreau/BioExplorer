@@ -49,7 +49,7 @@ public:
      * @param details Set of attributes defining how the Synaptome should be loaded
      */
     Synaptome(core::Scene& scene, const details::SynaptomeDetails& details, const core::Vector3d& position,
-              const core::Quaterniond& rotation, const core::LoaderProgress& callback = core::LoaderProgress());
+              const core::Quaterniond& rotation, core::LoaderProgress& callback);
 
 protected:
     void _addNode(const uint64_t id, const core::Vector3f& position, float mass);
@@ -58,7 +58,7 @@ protected:
 private:
     double _getDisplacementValue(const DisplacementElement& element) final { return 0; }
 
-    void _buildModel(const core::LoaderProgress& callback);
+    void _buildModel(core::LoaderProgress& callback);
 
     const details::SynaptomeDetails _details;
     core::Scene& _scene;

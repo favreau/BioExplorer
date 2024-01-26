@@ -63,13 +63,13 @@ bool NeuronsLoader::isSupported(const std::string& storage, const std::string& /
     return (storage.find(SUPPORTED_PROTOCOL_NEURONS) == 0);
 }
 
-ModelDescriptorPtr NeuronsLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr NeuronsLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                  const PropertyMap& /*properties*/) const
 {
     PLUGIN_THROW("Loading Neurons from blob is not supported");
 }
 
-ModelDescriptorPtr NeuronsLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr NeuronsLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                     const PropertyMap& properties) const
 {
     PropertyMap props = _defaults;

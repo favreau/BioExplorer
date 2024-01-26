@@ -44,13 +44,13 @@ public:
 
     bool isSupported(const std::string& storage, const std::string& extension) const final;
 
-    ModelDescriptorPtr importFromStorage(const std::string& storage, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromStorage(const std::string& storage, LoaderProgress& callback,
                                          const PropertyMap& properties) const final;
 
-    ModelDescriptorPtr importFromBlob(Blob&& blob, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromBlob(Blob&& blob, LoaderProgress& callback,
                                       const PropertyMap& properties) const final;
 
-    ModelMetadata importMesh(const std::string& fileName, const LoaderProgress& callback, Model& model,
+    ModelMetadata importMesh(const std::string& fileName, LoaderProgress& callback, Model& model,
                              const Matrix4f& transformation, const size_t defaultMaterialId,
                              const GeometryQuality geometryQuality) const;
 
@@ -61,7 +61,7 @@ private:
 
     ModelMetadata _postLoad(const aiScene* aiScene, Model& model, const Matrix4f& transformation,
                             const size_t defaultMaterial, const std::string& folder,
-                            const LoaderProgress& callback) const;
+                            LoaderProgress& callback) const;
     size_t _getQuality(const GeometryQuality geometryQuality) const;
 };
 } // namespace core

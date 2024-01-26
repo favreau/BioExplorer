@@ -35,10 +35,10 @@ public:
     std::string getName() const final;
 
     bool isSupported(const std::string& storage, const std::string& extension) const final;
-    ModelDescriptorPtr importFromBlob(Blob&& blob, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromBlob(Blob&& blob, LoaderProgress& callback,
                                       const PropertyMap& properties) const final;
 
-    ModelDescriptorPtr importFromStorage(const std::string& storage, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromStorage(const std::string& storage, LoaderProgress& callback,
                                          const PropertyMap& properties) const final;
 };
 } // namespace core

@@ -88,7 +88,7 @@ bool SonataCacheLoader::isSupported(const std::string& /*filename*/, const std::
     return types.find(extension) != types.end();
 }
 
-ModelDescriptorPtr SonataCacheLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr SonataCacheLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                      const PropertyMap& /*properties*/) const
 {
     throw std::runtime_error("Loading circuit from blob is not supported");
@@ -104,7 +104,7 @@ std::string SonataCacheLoader::_readString(std::ifstream& buffer) const
     return str.data();
 }
 
-ModelDescriptorPtr SonataCacheLoader::importFromStorage(const std::string& path, const LoaderProgress& callback,
+ModelDescriptorPtr SonataCacheLoader::importFromStorage(const std::string& path, LoaderProgress& callback,
                                                         const PropertyMap& properties) const
 {
     PropertyMap props = _defaults;

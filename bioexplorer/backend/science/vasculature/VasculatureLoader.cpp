@@ -63,13 +63,13 @@ bool VasculatureLoader::isSupported(const std::string& storage, const std::strin
     return (storage.find(SUPPORTED_PROTOCOL_VASCULATURE) == 0);
 }
 
-ModelDescriptorPtr VasculatureLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr VasculatureLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                      const PropertyMap& /*properties*/) const
 {
     PLUGIN_THROW("Loading vasculature from blob is not supported");
 }
 
-ModelDescriptorPtr VasculatureLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr VasculatureLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                         const PropertyMap& properties) const
 {
     PropertyMap props = _defaults;

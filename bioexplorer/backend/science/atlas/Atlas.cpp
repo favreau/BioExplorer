@@ -47,7 +47,7 @@ using namespace db;
 namespace atlas
 {
 Atlas::Atlas(Scene& scene, const AtlasDetails& details, const Vector3d& position, const Quaterniond& rotation,
-             const LoaderProgress& callback)
+             LoaderProgress& callback)
     : SDFGeometries(NO_GRID_ALIGNMENT, position, rotation, doublesToVector3d(details.scale))
     , _details(details)
     , _scene(scene)
@@ -57,7 +57,7 @@ Atlas::Atlas(Scene& scene, const AtlasDetails& details, const Vector3d& position
     PLUGIN_TIMER(chrono.elapsed(), "Atlas loaded");
 }
 
-void Atlas::_buildModel(const LoaderProgress& callback)
+void Atlas::_buildModel(LoaderProgress& callback)
 {
     if (_modelDescriptor)
         _scene.removeModel(_modelDescriptor->getModelID());

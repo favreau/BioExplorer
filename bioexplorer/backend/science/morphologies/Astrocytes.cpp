@@ -54,7 +54,7 @@ const double DEFAULT_ENDFOOT_RADIUS_RATIO = 1.1;
 const double DEFAULT_ENDFOOT_RADIUS_SHIFTING_RATIO = 0.35;
 
 Astrocytes::Astrocytes(Scene& scene, const AstrocytesDetails& details, const Vector3d& assemblyPosition,
-                       const Quaterniond& assemblyRotation, const core::LoaderProgress& callback)
+                       const Quaterniond& assemblyRotation, LoaderProgress& callback)
     : Morphologies(details.alignToGrid, assemblyPosition, assemblyRotation, doublesToVector3d(details.scale))
     , _details(details)
     , _scene(scene)
@@ -108,7 +108,7 @@ void Astrocytes::_logRealismParams()
     PLUGIN_INFO(1, "----------------------------------------------------");
 }
 
-void Astrocytes::_buildModel(const LoaderProgress& callback, const doubles& radii)
+void Astrocytes::_buildModel(LoaderProgress& callback, const doubles& radii)
 {
     const auto animationParams = doublesToMolecularSystemAnimationDetails(_details.animationParams);
     srand(animationParams.seed);
@@ -395,7 +395,7 @@ void Astrocytes::_buildModel(const LoaderProgress& callback, const doubles& radi
                                     {"SQL filter", _details.sqlFilter},
                                     {"Max distance to soma", std::to_string(_maxDistanceToSoma)}};
 
-    _modelDescriptor.reset(new core::ModelDescriptor(std::move(model), _details.assemblyName, metadata));
+    _modelDescriptor.reset(new ModelDescriptor(std::move(model), _details.assemblyName, metadata));
     if (!_modelDescriptor)
         PLUGIN_THROW("Astrocytes model could not be created");
 }
@@ -545,7 +545,8 @@ void Astrocytes::setVasculatureRadiusReport(const VasculatureRadiusReportDetails
     doubles series;
     for (const double radius : radii)
         series.push_back(details.amplitude * radius);
-    _buildModel(LoaderProgress(), series);
+    LoaderProgress loaderProgress;
+    _buildModel(loaderProgress, series);
 }
 
 } // namespace morphology

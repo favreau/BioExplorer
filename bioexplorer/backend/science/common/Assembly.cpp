@@ -57,6 +57,7 @@
 #include <science/common/shapes/MeshShape.h>
 #endif
 
+#include <platform/core/engineapi/Engine.h>
 #include <platform/core/engineapi/Model.h>
 
 using namespace core;
@@ -72,9 +73,10 @@ using namespace atlas;
 
 namespace common
 {
-Assembly::Assembly(Scene &scene, const AssemblyDetails &details)
+Assembly::Assembly(Engine &engine, const AssemblyDetails &details)
     : _details(details)
-    , _scene(scene)
+    , _scene(engine.getScene())
+    , _engine(engine)
 {
     const auto size = doublesToVector3d(details.shapeParams);
     _position = doublesToVector3d(_details.position);
@@ -138,6 +140,7 @@ Assembly::Assembly(Scene &scene, const AssemblyDetails &details)
 
 Assembly::~Assembly()
 {
+    _loadingThread.detach();
     for (const auto &protein : _proteins)
     {
         const auto modelId = protein.second->getModelDescriptor()->getModelID();
@@ -594,17 +597,30 @@ void Assembly::addVasculature(const VasculatureDetails &details)
             _scene.removeModel(modelId);
         }
     }
-    _vasculature.reset(std::move(new Vasculature(_scene, details, _position, _rotation)));
-    _scene.addModel(_vasculature->getModelDescriptor());
-    _scene.markModified(false);
+    _startLoadingThread(std::bind(&Assembly::_loadVasculature, this, std::placeholders::_1), details);
+}
+
+void Assembly::_loadVasculature(const VasculatureDetails &details)
+{
+    try
+    {
+        _vasculature.reset(new Vasculature(_scene, details, _position, _rotation, _loaderProgress));
+        _scene.addModel(_vasculature->getModelDescriptor());
+        _scene.markModified(false);
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
 }
 
 std::string Assembly::getVasculatureInfo() const
 {
-    auto modelDescriptor = _vasculature->getModelDescriptor();
     Response response;
     if (!_vasculature)
         PLUGIN_THROW("No vasculature is currently defined in assembly " + _details.name);
+    auto modelDescriptor = _vasculature->getModelDescriptor();
     std::stringstream s;
     s << "modelId=" << modelDescriptor->getModelID() << CONTENTS_DELIMITER << "nbNodes=" << _vasculature->getNbNodes();
     return s.str().c_str();
@@ -638,19 +654,43 @@ void Assembly::addAstrocytes(const AstrocytesDetails &details)
     if (_astrocytes)
         PLUGIN_THROW("Astrocytes already exists in assembly " + details.assemblyName);
 
-    _astrocytes.reset(new Astrocytes(_scene, details, _position, _rotation));
-    _scene.addModel(_astrocytes->getModelDescriptor());
-    _scene.markModified(false);
+    _startLoadingThread(std::bind(&Assembly::_loadAstrocytes, this, std::placeholders::_1), details);
+}
+
+void Assembly::_loadAstrocytes(const AstrocytesDetails &details)
+{
+    try
+    {
+        _astrocytes.reset(new Astrocytes(_scene, details, _position, _rotation, _loaderProgress));
+        _scene.addModel(_astrocytes->getModelDescriptor());
+        _scene.markModified(false);
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
 }
 
 void Assembly::addAtlas(const AtlasDetails &details)
 {
     if (_atlas)
         PLUGIN_THROW("Atlas already exists in assembly " + details.assemblyName);
+}
 
-    _atlas.reset(new Atlas(_scene, details, _position, _rotation));
-    _scene.addModel(_atlas->getModelDescriptor());
-    _scene.markModified(false);
+void Assembly::_loadAtlas(const AtlasDetails &details)
+{
+    try
+    {
+        _atlas.reset(new Atlas(_scene, details, _position, _rotation, _loaderProgress));
+        _scene.addModel(_atlas->getModelDescriptor());
+        _scene.markModified(false);
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
 }
 
 void Assembly::addNeurons(const NeuronsDetails &details)
@@ -658,9 +698,22 @@ void Assembly::addNeurons(const NeuronsDetails &details)
     if (_neurons)
         PLUGIN_THROW("Neurons already exists in assembly " + details.assemblyName);
 
-    _neurons.reset(new Neurons(_scene, details, _position, _rotation));
-    _scene.addModel(_neurons->getModelDescriptor());
-    _scene.markModified(false);
+    _startLoadingThread(std::bind(&Assembly::_loadNeurons, this, std::placeholders::_1), details);
+}
+
+void Assembly::_loadNeurons(const NeuronsDetails &details)
+{
+    try
+    {
+        _neurons.reset(new Neurons(_scene, details, _position, _rotation, _loaderProgress));
+        _scene.addModel(_neurons->getModelDescriptor());
+        _scene.markModified(false);
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
 }
 
 void Assembly::addSynaptome(const SynaptomeDetails &details)
@@ -668,9 +721,22 @@ void Assembly::addSynaptome(const SynaptomeDetails &details)
     if (_synaptome)
         PLUGIN_THROW("Synaptome already exists in assembly " + details.assemblyName);
 
-    _synaptome.reset(new Synaptome(_scene, details, _position, _rotation));
-    _scene.addModel(_synaptome->getModelDescriptor());
-    _scene.markModified(false);
+    _startLoadingThread(std::bind(&Assembly::_loadSynaptome, this, std::placeholders::_1), details);
+}
+
+void Assembly::_loadSynaptome(const SynaptomeDetails &details)
+{
+    try
+    {
+        _synaptome.reset(new Synaptome(_scene, details, _position, _rotation, _loaderProgress));
+        _scene.addModel(_synaptome->getModelDescriptor());
+        _scene.markModified(false);
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
 }
 
 Vector4ds Assembly::getNeuronSectionPoints(const NeuronIdSectionIdDetails &details)
@@ -730,9 +796,22 @@ void Assembly::addWhiteMatter(const WhiteMatterDetails &details)
             _scene.removeModel(modelId);
         }
     }
-    _whiteMatter.reset(new WhiteMatter(_scene, details, _position, _rotation));
-    _scene.addModel(_whiteMatter->getModelDescriptor());
-    _scene.markModified(false);
+    _startLoadingThread(std::bind(&Assembly::_loadWhiteMatter, this, std::placeholders::_1), details);
+}
+
+void Assembly::_loadWhiteMatter(const WhiteMatterDetails &details)
+{
+    try
+    {
+        _whiteMatter.reset(new WhiteMatter(_scene, details, _position, _rotation, _loaderProgress));
+        _scene.addModel(_whiteMatter->getModelDescriptor());
+        _scene.markModified(false);
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
 }
 
 void Assembly::addSynapses(const SynapsesDetails &details)
@@ -746,8 +825,22 @@ void Assembly::addSynapses(const SynapsesDetails &details)
             _scene.removeModel(modelId);
         }
     }
-    _synapses.reset(std::move(new Synapses(_scene, details, _position, _rotation)));
-    _scene.markModified(false);
+    _startLoadingThread(std::bind(&Assembly::_loadSynapses, this, std::placeholders::_1), details);
+}
+
+void Assembly::_loadSynapses(const SynapsesDetails &details)
+{
+    try
+    {
+        _synapses.reset(new Synapses(_scene, details, _position, _rotation, _loaderProgress));
+        _scene.markModified(false);
+        _loadingInProgress = false;
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
 }
 
 void Assembly::addSynapseEfficacy(const SynapseEfficacyDetails &details)
@@ -761,15 +854,43 @@ void Assembly::addSynapseEfficacy(const SynapseEfficacyDetails &details)
             _scene.removeModel(modelId);
         }
     }
-    _synapseEfficacy.reset(std::move(new SynapseEfficacy(_scene, details, _position, _rotation)));
+    _startLoadingThread(std::bind(&Assembly::_loadSynapseEfficacy, this, std::placeholders::_1), details);
+}
 
-    auto modelDescriptor = _synapseEfficacy->getModelDescriptor();
-    auto handler = std::make_shared<SynapseEfficacySimulationHandler>(details);
-    auto &model = modelDescriptor->getModel();
-    setDefaultTransferFunction(model, Vector2d(0.0, 1.0), 1.0);
-    model.setSimulationHandler(handler);
+void Assembly::_loadSynapseEfficacy(const SynapseEfficacyDetails &details)
+{
+    try
+    {
+        _synapseEfficacy.reset(new SynapseEfficacy(_scene, details, _position, _rotation, _loaderProgress));
 
-    _scene.markModified(false);
+        auto modelDescriptor = _synapseEfficacy->getModelDescriptor();
+        auto handler = std::make_shared<SynapseEfficacySimulationHandler>(details);
+        auto &model = modelDescriptor->getModel();
+        setDefaultTransferFunction(model, Vector2d(0.0, 1.0), 1.0);
+        model.setSimulationHandler(handler);
+
+        _scene.markModified(false);
+    }
+    catch (const std::runtime_error &e)
+    {
+        _loaderProgress.updateProgress(e.what(), 1.f);
+    }
+    _loadingInProgress = false;
+}
+
+template <typename FunctionType, typename... Args>
+void Assembly::_startLoadingThread(FunctionType threadFunction, Args &&...args)
+{
+    if (_loadingInProgress)
+        PLUGIN_THROW("Loading already in progress. Parallel loading of models in not supported");
+    _loadingInProgress = true;
+    _loaderProgress.updateProgress("Loading...", 0.f);
+    _loadingThread = std::thread(threadFunction, std::forward<Args>(args)...);
+}
+
+const LoaderProgress &Assembly::getLoaderProgress()
+{
+    return _loaderProgress;
 }
 
 } // namespace common

@@ -44,7 +44,7 @@ using namespace db;
 namespace connectomics
 {
 SynapseEfficacy::SynapseEfficacy(Scene& scene, const SynapseEfficacyDetails& details, const Vector3d& position,
-                                 const Quaterniond& rotation)
+                                 const Quaterniond& rotation, LoaderProgress& callback)
     : SDFGeometries(details.alignToGrid, position, rotation)
     , _details(details)
     , _scene(scene)

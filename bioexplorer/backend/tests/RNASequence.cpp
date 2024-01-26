@@ -86,8 +86,8 @@ BOOST_AUTO_TEST_CASE(rna_sequence)
                                   "BioExplorer --db-name=bioexplorer --db-user=core "
                                   "--db-password=core --db-host=localhost --db-port=5432"};
     core::Core core(argv.size(), argv.data());
-    auto& scene = core.getEngine().getScene();
-    Assembly assembly(scene, getAssemblyDescriptor());
+    auto& engine = core.getEngine();
+    Assembly assembly(engine, getAssemblyDescriptor());
     assembly.addRNASequence(getRNASequenceDescriptor());
 
     BOOST_CHECK(assembly.getRNASequence()->getRNASequences().size() == 0);

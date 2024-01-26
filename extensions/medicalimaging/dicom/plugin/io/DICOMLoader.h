@@ -62,10 +62,10 @@ public:
 
     static core::PropertyMap getCLIProperties();
 
-    core::ModelDescriptorPtr importFromStorage(const std::string& storage, const core::LoaderProgress& callback,
+    core::ModelDescriptorPtr importFromStorage(const std::string& storage, core::LoaderProgress& callback,
                                                const core::PropertyMap& properties) const final;
 
-    core::ModelDescriptorPtr importFromBlob(core::Blob&& blob, const core::LoaderProgress& callback,
+    core::ModelDescriptorPtr importFromBlob(core::Blob&& blob, core::LoaderProgress& callback,
                                             const core::PropertyMap& properties) const final;
 
     core::ModelDescriptorPtr importFromFolder(const std::string& path);
@@ -79,7 +79,7 @@ private:
 
     void _readDICOMFile(const std::string& path, DICOMImageDescriptor& imageDescriptor) const;
 
-    core::ModelDescriptorPtr _readDirectory(const std::string& path, const core::LoaderProgress& callback) const;
+    core::ModelDescriptorPtr _readDirectory(const std::string& path, core::LoaderProgress& callback) const;
 
     core::ModelDescriptorPtr _readFile(const std::string& path) const;
 

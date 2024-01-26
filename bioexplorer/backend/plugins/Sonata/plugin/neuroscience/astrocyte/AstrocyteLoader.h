@@ -47,16 +47,16 @@ public:
     static core::PropertyMap getCLIProperties();
 
     /** @copydoc Loader::importFromBlob */
-    core::ModelDescriptorPtr importFromBlob(core::Blob &&blob, const core::LoaderProgress &callback,
+    core::ModelDescriptorPtr importFromBlob(core::Blob &&blob, core::LoaderProgress &callback,
                                             const core::PropertyMap &properties) const final;
 
     /** @copydoc Loader::importFromFile */
-    core::ModelDescriptorPtr importFromStorage(const std::string &path, const core::LoaderProgress &callback,
+    core::ModelDescriptorPtr importFromStorage(const std::string &path, core::LoaderProgress &callback,
                                                const core::PropertyMap &properties) const final;
 
 private:
     void _importMorphologiesFromURIs(const core::PropertyMap &properties, const std::vector<std::string> &uris,
-                                     const core::LoaderProgress &callback, core::Model &model) const;
+                                     core::LoaderProgress &callback, core::Model &model) const;
     const core::ApplicationParameters &_applicationParameters;
     core::PropertyMap _defaults;
     core::PropertyMap _fixedDefaults;

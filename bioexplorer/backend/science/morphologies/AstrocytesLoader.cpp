@@ -63,13 +63,13 @@ bool AstrocytesLoader::isSupported(const std::string& storage, const std::string
     return (storage.find(SUPPORTED_PROTOCOL_ASTROCYTES) == 0);
 }
 
-ModelDescriptorPtr AstrocytesLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr AstrocytesLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                     const PropertyMap& /*properties*/) const
 {
     PLUGIN_THROW("Loading astrocytes from blob is not supported");
 }
 
-ModelDescriptorPtr AstrocytesLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr AstrocytesLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                        const PropertyMap& properties) const
 {
     PropertyMap props = _defaults;

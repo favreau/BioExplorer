@@ -45,7 +45,7 @@ using namespace db;
 namespace morphology
 {
 Synapses::Synapses(Scene& scene, const SynapsesDetails& details, const Vector3d& assemblyPosition,
-                   const Quaterniond& assemblyRotation)
+                   const Quaterniond& assemblyRotation, LoaderProgress& callback)
     : Morphologies(0, assemblyPosition, assemblyRotation)
     , _details(details)
     , _scene(scene)

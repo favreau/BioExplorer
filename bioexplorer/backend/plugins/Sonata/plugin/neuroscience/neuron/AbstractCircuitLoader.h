@@ -57,7 +57,7 @@ public:
 
     bool isSupported(const std::string &filename, const std::string &extension) const;
 
-    core::ModelDescriptorPtr importFromBlob(core::Blob &&blob, const core::LoaderProgress &callback,
+    core::ModelDescriptorPtr importFromBlob(core::Blob &&blob, core::LoaderProgress &callback,
                                             const core::PropertyMap &properties) const;
 
     /**
@@ -67,7 +67,7 @@ public:
      * the circuit contains no cells.
      */
     core::ModelDescriptorPtr importCircuit(const std::string &circuitConfig, const core::PropertyMap &properties,
-                                           const core::LoaderProgress &callback) const;
+                                           core::LoaderProgress &callback) const;
 
     /**
      * @brief _populateLayerIds populates the neuron layer IDs. This is
@@ -98,7 +98,7 @@ private:
                               const common::GIDOffsets &targetGIDOffsets,
                               common::CompartmentReportPtr compartmentReport, const size_ts &layerIds,
                               const size_ts &morphologyTypes, const size_ts &electrophysiologyTypes,
-                              const core::LoaderProgress &callback, const size_t materialId = core::NO_MATERIAL) const;
+                              core::LoaderProgress &callback, const size_t materialId = core::NO_MATERIAL) const;
 
     /**
      * @brief _getMaterialFromSectionType return a material determined by the
@@ -119,7 +119,7 @@ private:
     void _importMeshes(const core::PropertyMap &props, core::Model &model, const brain::GIDSet &gids,
                        const common::Matrix4fs &transformations, const common::GIDOffsets &targetGIDOffsets,
                        const size_ts &layerIds, const size_ts &morphologyTypes, const size_ts &electrophysiologyTypes,
-                       const core::LoaderProgress &callback) const;
+                       core::LoaderProgress &callback) const;
 
     common::CompartmentReportPtr _attachSimulationHandler(const core::PropertyMap &properties,
                                                           const brion::BlueConfig &blueConfiguration,

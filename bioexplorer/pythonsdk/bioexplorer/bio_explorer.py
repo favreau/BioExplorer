@@ -27,6 +27,8 @@ import os
 from pyquaternion import Quaternion
 
 import seaborn as sns
+import time
+from tqdm import tqdm
 
 from .core.client import Client
 from .transfer_function import TransferFunction
@@ -3201,6 +3203,32 @@ class BioExplorer:
         """
         return self._invoke_and_check("get-out-of-core-average-loading-time")
 
+    def loading_progress(self, assembly_name):
+        """
+        Displays a data loading progress bar for the specified assembly
+
+        :assembly_name: Name of the assembly
+        """
+        progress_bar = tqdm(total=100)
+        progress_bar.refresh()
+        params = dict()
+        params["name"] = assembly_name
+        done = False
+        while not done:
+            progress_loader = self._invoke_and_check("get-assembly-loading-progress", params)
+            progress = progress_loader["progress"]
+            if progress < 1.0:
+                progress_bar.desc = progress_loader["contents"]
+                progress_bar.n = int(progress * 100)
+                progress_bar.refresh()
+                time.sleep(0.1)
+            else:
+                progress_bar.desc = progress_loader["contents"]
+                progress_bar.n = 100
+                progress_bar.refresh()
+                done = True
+        progress_bar.close()
+
     def add_atlas(
         self,
         assembly_name,
@@ -3243,7 +3271,9 @@ class BioExplorer:
         params["meshPosition"] = mesh_position.to_list()
         params["meshRotation"] = list(mesh_rotation)
         params["meshScale"] = mesh_scale.to_list()
-        return self._invoke_and_check("add-atlas", params)
+        response = self._invoke_and_check("add-atlas", params)
+        self.loading_progress(assembly_name)
+        return response
 
     def add_vasculature(
         self,
@@ -3299,7 +3329,9 @@ class BioExplorer:
         params["animationParams"] = animation_params.to_list()
         params["displacementParams"] = displacement_params.to_list()
         params["alignToGrid"] = align_to_grid
-        return self._invoke_and_check("add-vasculature", params)
+        response = self._invoke_and_check("add-vasculature", params)
+        self.loading_progress(assembly_name)
+        return response
 
     def get_vasculature_info(self, assembly_name):
         """
@@ -3430,7 +3462,9 @@ class BioExplorer:
         params["displacementParams"] = displacement_params.to_list()
         params["maxDistanceToSoma"] = max_distance_to_soma
         params["alignToGrid"] = align_to_grid
-        return self._invoke_and_check("add-astrocytes", params)
+        response = self._invoke_and_check("add-astrocytes", params)
+        self.loading_progress(assembly_name)
+        return response
 
     def add_neurons(
         self,
@@ -3521,7 +3555,10 @@ class BioExplorer:
         params["displacementParams"] = displacement_params.to_list()
         params["maxDistanceToSoma"] = max_distance_to_soma
         params["alignToGrid"] = align_to_grid
-        return self._invoke_and_check("add-neurons", params)
+        response = self._invoke_and_check("add-neurons", params)
+
+        self.loading_progress(assembly_name)
+        return response
 
     def get_neuron_section_points(self, assembly_name, neuron_guid, section_guid):
         """
@@ -3621,7 +3658,9 @@ class BioExplorer:
         params["radius"] = radius
         params["sqlFilter"] = sql_filter
         params["scale"] = scale.to_list()
-        return self._invoke_and_check("add-white-matter", params)
+        response = self._invoke_and_check("add-white-matter", params)
+        self.loading_progress(assembly_name)
+        return response
 
     def add_synapses(
         self,
@@ -3655,7 +3694,9 @@ class BioExplorer:
         params["realismLevel"] = realism_level
         params["sqlFilter"] = sql_filter
         params["displacementParams"] = displacement_params
-        return self._invoke_and_check("add-synapses", params)
+        response = self._invoke_and_check("add-synapses", params)
+        self.loading_progress(assembly_name)
+        return response
 
     def add_synapse_efficacy_report(
         self,
@@ -3685,7 +3726,9 @@ class BioExplorer:
         params["sqlFilter"] = sql_filter
         params["simulationReportId"] = simulation_report_id
         params["alignToGrid"] = align_to_grid
-        return self._invoke_and_check("add-synapse-efficacy", params)
+        response = self._invoke_and_check("add-synapse-efficacy", params)
+        self.loading_progress(assembly_name)
+        return response
 
     def look_at(self, source, target):
         """
@@ -3736,7 +3779,9 @@ class BioExplorer:
         params["force"] = force
         params["sqlNodeFilter"] = sql_node_filter
         params["sqlEdgeFilter"] = sql_edge_filter
-        return self._invoke_and_check("add-synaptome", params)
+        response = self._invoke_and_check("add-synaptome", params)
+        self.loading_progress(assembly_name)
+        return response
 
 
 # Private classes

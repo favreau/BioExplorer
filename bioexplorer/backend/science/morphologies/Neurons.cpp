@@ -77,7 +77,7 @@ std::map<ReportType, std::string> reportTypeAsString = {{ReportType::undefined, 
 const doubles MITOCHONDRIA_DENSITY = {0.0459, 0.0522, 0.064, 0.0774, 0.0575, 0.0403};
 
 Neurons::Neurons(Scene& scene, const NeuronsDetails& details, const Vector3d& assemblyPosition,
-                 const Quaterniond& assemblyRotation, const LoaderProgress& callback)
+                 const Quaterniond& assemblyRotation, LoaderProgress& callback)
     : Morphologies(details.alignToGrid, assemblyPosition, assemblyRotation, doublesToVector3d(details.scale))
     , _details(details)
     , _scene(scene)
@@ -192,7 +192,7 @@ void Neurons::_buildSurface(const NeuronSomaMap& somas)
 #endif
 }
 
-void Neurons::_buildModel(const LoaderProgress& callback)
+void Neurons::_buildModel(LoaderProgress& callback)
 {
     const auto& connector = DBConnector::getInstance();
 

@@ -265,7 +265,7 @@ ModelDescriptorPtr DICOMLoader::_readFile(const std::string& fileName) const
     return modelDescriptor;
 }
 
-ModelDescriptorPtr DICOMLoader::_readDirectory(const std::string& fileName, const LoaderProgress& callback) const
+ModelDescriptorPtr DICOMLoader::_readDirectory(const std::string& fileName, LoaderProgress& callback) const
 {
     ModelMetadata metaData;
     const auto& dicomImages = _parseDICOMImagesData(fileName, metaData);
@@ -409,7 +409,7 @@ ModelDescriptorPtr DICOMLoader::importFromFolder(const std::string& path)
     return modelDescriptor;
 }
 
-ModelDescriptorPtr DICOMLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr DICOMLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                   const PropertyMap& /*properties*/) const
 {
     PLUGIN_INFO("Importing DICOM dataset from " << storage);
@@ -419,7 +419,7 @@ ModelDescriptorPtr DICOMLoader::importFromStorage(const std::string& storage, co
     return _readDirectory(storage, callback);
 }
 
-ModelDescriptorPtr DICOMLoader::importFromBlob(Blob&&, const LoaderProgress&, const PropertyMap&) const
+ModelDescriptorPtr DICOMLoader::importFromBlob(Blob&&, LoaderProgress&, const PropertyMap&) const
 {
     throw std::runtime_error("Loading DICOM from blob is not supported");
 }

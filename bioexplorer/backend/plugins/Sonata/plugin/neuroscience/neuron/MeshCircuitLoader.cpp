@@ -66,7 +66,7 @@ MeshCircuitLoader::MeshCircuitLoader(Scene &scene, const ApplicationParameters &
     _fixedDefaults.setProperty({PROP_EXTERNALS.name, false});
 }
 
-ModelDescriptorPtr MeshCircuitLoader::importFromStorage(const std::string &path, const LoaderProgress &callback,
+ModelDescriptorPtr MeshCircuitLoader::importFromStorage(const std::string &path, LoaderProgress &callback,
                                                         const PropertyMap &properties) const
 {
     PLUGIN_INFO("Loading circuit from " << path);

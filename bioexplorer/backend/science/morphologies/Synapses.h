@@ -43,7 +43,7 @@ public:
      * be loaded
      */
     Synapses(core::Scene& scene, const details::SynapsesDetails& details, const core::Vector3d& assemblyPosition,
-             const core::Quaterniond& assemblyRotation);
+             const core::Quaterniond& assemblyRotation, core::LoaderProgress& callback);
 
 private:
     double _getDisplacementValue(const DisplacementElement& element) final;

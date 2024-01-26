@@ -263,6 +263,11 @@ void BioExplorerPlugin::init()
         actionInterface->registerRequest<AssemblyDetails, Response>(endPoint, [&](const AssemblyDetails &payload)
                                                                     { return _addAssembly(payload); });
 
+        endPoint = PLUGIN_API_PREFIX + "get-assembly-loading-progress";
+        PLUGIN_REGISTER_ENDPOINT(endPoint);
+        actionInterface->registerRequest<NameDetails, Response>(endPoint, [&](const NameDetails &payload)
+                                                                { return _getAssemblyLoadingProgress(payload); });
+
         endPoint = PLUGIN_API_PREFIX + "set-protein-color-scheme";
         PLUGIN_REGISTER_ENDPOINT(endPoint);
         actionInterface->registerRequest<ProteinColorSchemeDetails, Response>(
@@ -872,9 +877,26 @@ Response BioExplorerPlugin::_addAssembly(const AssemblyDetails &payload)
     {
         if (_assemblies.find(payload.name) != _assemblies.end())
             PLUGIN_THROW("Assembly already exists: " + payload.name);
-        auto &scene = _api->getScene();
-        AssemblyPtr assembly = AssemblyPtr(new Assembly(scene, payload));
+        auto &engine = _api->getEngine();
+        AssemblyPtr assembly = AssemblyPtr(new Assembly(engine, payload));
         _assemblies[payload.name] = std::move(assembly);
+    }
+    CATCH_STD_EXCEPTION()
+    return response;
+}
+
+Response BioExplorerPlugin::_getAssemblyLoadingProgress(const NameDetails &payload)
+{
+    Response response;
+    try
+    {
+        const auto it = _assemblies.find(payload.name);
+        if (it == _assemblies.end())
+            PLUGIN_THROW("Assembly does not exist: " + payload.name);
+
+        const auto &progressLoader = (*it).second->getLoaderProgress();
+        response.progress = progressLoader.getProgress();
+        response.contents = progressLoader.getMessage();
     }
     CATCH_STD_EXCEPTION()
     return response;
@@ -1084,7 +1106,8 @@ Response BioExplorerPlugin::_importFromFile(const FileAccessDetails &payload)
     {
         auto &scene = _api->getScene();
         CacheLoader loader(scene);
-        const auto modelDescriptors = loader.importModelsFromFile(payload.filename);
+        LoaderProgress loaderProgress;
+        const auto modelDescriptors = loader.importModelsFromFile(payload.filename, loaderProgress);
         if (modelDescriptors.empty())
             PLUGIN_THROW("No models were found in " + payload.filename);
         response.contents = std::to_string(modelDescriptors.size()) + " models successfully loaded";

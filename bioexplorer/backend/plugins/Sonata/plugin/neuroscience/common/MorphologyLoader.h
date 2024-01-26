@@ -68,11 +68,11 @@ public:
     core::PropertyMap getProperties() const final;
 
     /** @copydoc Loader::importFromBlob */
-    core::ModelDescriptorPtr importFromBlob(core::Blob&& blob, const core::LoaderProgress& callback,
+    core::ModelDescriptorPtr importFromBlob(core::Blob&& blob, core::LoaderProgress& callback,
                                             const core::PropertyMap& properties) const final;
 
     /** @copydoc Loader::importFromFile */
-    core::ModelDescriptorPtr importFromStorage(const std::string& storage, const core::LoaderProgress& callback,
+    core::ModelDescriptorPtr importFromStorage(const std::string& storage, core::LoaderProgress& callback,
                                                const core::PropertyMap& properties) const final;
 
     /**

@@ -56,7 +56,7 @@ bool XYZBLoader::isSupported(const std::string& storage, const std::string& exte
     return types.find(extension) != types.end();
 }
 
-ModelDescriptorPtr XYZBLoader::importFromBlob(Blob&& blob, const LoaderProgress& callback,
+ModelDescriptorPtr XYZBLoader::importFromBlob(Blob&& blob, LoaderProgress& callback,
                                               const PropertyMap& properties) const
 {
     CORE_INFO("Loading xyz " << blob.name);
@@ -143,7 +143,7 @@ ModelDescriptorPtr XYZBLoader::importFromBlob(Blob&& blob, const LoaderProgress&
     return modelDescriptor;
 }
 
-ModelDescriptorPtr XYZBLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr XYZBLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                  const PropertyMap& properties) const
 {
     std::ifstream file(storage);

@@ -40,7 +40,7 @@ public:
 
     static core::PropertyMap getCLIProperties();
 
-    core::ModelDescriptorPtr importFromStorage(const std::string &path, const core::LoaderProgress &callback,
+    core::ModelDescriptorPtr importFromStorage(const std::string &path, core::LoaderProgress &callback,
                                             const core::PropertyMap &properties) const final;
 };
 } // namespace neuron

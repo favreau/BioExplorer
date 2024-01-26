@@ -63,13 +63,13 @@ bool WhiteMatterLoader::isSupported(const std::string& storage, const std::strin
     return (storage.find(SUPPORTED_PROTOCOL_WHITE_MATTER) == 0);
 }
 
-ModelDescriptorPtr WhiteMatterLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr WhiteMatterLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                      const PropertyMap& /*properties*/) const
 {
     PLUGIN_THROW("Loading atlas from blob is not supported");
 }
 
-ModelDescriptorPtr WhiteMatterLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr WhiteMatterLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                         const PropertyMap& properties) const
 {
     PropertyMap props = _defaults;

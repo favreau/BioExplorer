@@ -46,7 +46,7 @@ using namespace db;
 namespace connectomics
 {
 WhiteMatter::WhiteMatter(Scene& scene, const WhiteMatterDetails& details, const Vector3d& position,
-                         const Quaterniond& rotation, const LoaderProgress& callback)
+                         const Quaterniond& rotation, LoaderProgress& callback)
     : SDFGeometries(NO_GRID_ALIGNMENT, position, rotation, doublesToVector3d(details.scale))
     , _details(details)
     , _scene(scene)
@@ -56,7 +56,7 @@ WhiteMatter::WhiteMatter(Scene& scene, const WhiteMatterDetails& details, const 
     PLUGIN_TIMER(chrono.elapsed(), "White matter loaded");
 }
 
-void WhiteMatter::_buildModel(const LoaderProgress& callback)
+void WhiteMatter::_buildModel(LoaderProgress& callback)
 {
     if (_modelDescriptor)
         _scene.removeModel(_modelDescriptor->getModelID());

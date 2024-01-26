@@ -43,7 +43,7 @@ public:
      * be loaded
      */
     SynapseEfficacy(core::Scene& scene, const details::SynapseEfficacyDetails& details, const core::Vector3d& position,
-                    const core::Quaterniond& rotation);
+                    const core::Quaterniond& rotation, core::LoaderProgress& callback);
 
 private:
     double _getDisplacementValue(const DisplacementElement& element) final { return 0; }

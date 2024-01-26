@@ -48,7 +48,7 @@ using namespace io;
 using namespace db;
 
 Vasculature::Vasculature(Scene& scene, const VasculatureDetails& details, const Vector3d& assemblyPosition,
-                         const Quaterniond& assemblyRotation, const LoaderProgress& callback)
+                         const Quaterniond& assemblyRotation, LoaderProgress& callback)
     : SDFGeometries(details.alignToGrid, assemblyPosition, assemblyRotation, doublesToVector3d(details.scale))
     , _details(details)
     , _scene(scene)
@@ -260,7 +260,7 @@ void Vasculature::_addOrientation(ThreadSafeContainer& container, const Geometry
     container.addStreamline(sectionId, streamline);
 }
 
-void Vasculature::_buildModel(const LoaderProgress& callback, const doubles& radii)
+void Vasculature::_buildModel(LoaderProgress& callback, const doubles& radii)
 {
     if (_modelDescriptor)
         _scene.removeModel(_modelDescriptor->getModelID());
@@ -269,7 +269,7 @@ void Vasculature::_buildModel(const LoaderProgress& callback, const doubles& rad
     ThreadSafeContainers containers;
 
     PLUGIN_INFO(1, "Identifying nodes...");
-    callback.updateProgress("Identifying nodes...", 1.f);
+    callback.updateProgress("Identifying nodes...", 0.2f);
     const auto nbDBConnections = DBConnector::getInstance().getNbConnections();
 
     _nbNodes = DBConnector::getInstance().getVasculatureNbNodes(_details.populationName, _details.sqlFilter);
@@ -297,7 +297,8 @@ void Vasculature::_buildModel(const LoaderProgress& callback, const doubles& rad
                 PLUGIN_PROGRESS("Loading sections...", index, nbDBConnections);
                 try
                 {
-                    callback.updateProgress("Loading sections...", 0.5f * ((float)index / (float)nbDBConnections));
+                    callback.updateProgress("Loading sections...",
+                                            0.2f + 0.4f * ((float)index / (float)nbDBConnections));
                 }
                 catch (...)
                 {
@@ -405,7 +406,7 @@ void Vasculature::_buildModel(const LoaderProgress& callback, const doubles& rad
     for (size_t i = 0; i < containers.size(); ++i)
     {
         PLUGIN_PROGRESS("- Compiling 3D geometry...", 1 + i, containers.size());
-        callback.updateProgress("Compiling 3D geometry...", 0.5f + 0.5f * (float)(1 + i) / (float)containers.size());
+        callback.updateProgress("Compiling 3D geometry...", 0.6f + 0.4f * (float)(1 + i) / (float)containers.size());
         auto& container = containers[i];
         container.commitToModel();
     }
@@ -438,7 +439,8 @@ void Vasculature::setRadiusReport(const VasculatureRadiusReportDetails& details)
     doubles series;
     for (const double radius : radii)
         series.push_back(details.amplitude * radius);
-    _buildModel(LoaderProgress(), series);
+    LoaderProgress loaderProgress;
+    _buildModel(loaderProgress, series);
 }
 
 } // namespace vasculature

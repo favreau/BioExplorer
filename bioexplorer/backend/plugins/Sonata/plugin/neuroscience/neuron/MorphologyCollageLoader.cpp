@@ -61,7 +61,7 @@ MorphologyCollageLoader::MorphologyCollageLoader(Scene &scene, const Application
     _fixedDefaults.setProperty(PROP_ROTATION);
 }
 
-ModelDescriptorPtr MorphologyCollageLoader::importFromStorage(const std::string &path, const LoaderProgress &callback,
+ModelDescriptorPtr MorphologyCollageLoader::importFromStorage(const std::string &path, LoaderProgress &callback,
                                                               const PropertyMap &properties) const
 {
     PLUGIN_INFO("Loading circuit from " << path);

@@ -154,20 +154,20 @@ bool RawVolumeLoader::isSupported(const std::string& storage, const std::string&
     return extension == "raw";
 }
 
-ModelDescriptorPtr RawVolumeLoader::importFromBlob(Blob&& blob, const LoaderProgress& callback,
+ModelDescriptorPtr RawVolumeLoader::importFromBlob(Blob&& blob, LoaderProgress& callback,
                                                    const PropertyMap& properties) const
 {
     return _loadVolume(blob.name, callback, properties,
                        [&blob](auto volume) { volume->mapData(std::move(blob.data)); });
 }
 
-ModelDescriptorPtr RawVolumeLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr RawVolumeLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                       const PropertyMap& properties) const
 {
     return _loadVolume(storage, callback, properties, [storage](auto volume) { volume->mapData(storage); });
 }
 
-ModelDescriptorPtr RawVolumeLoader::_loadVolume(const std::string& filename, const LoaderProgress& callback,
+ModelDescriptorPtr RawVolumeLoader::_loadVolume(const std::string& filename, LoaderProgress& callback,
                                                 const PropertyMap& propertiesTmp,
                                                 const std::function<void(SharedDataVolumePtr)>& mapData) const
 {
@@ -240,13 +240,12 @@ bool MHDVolumeLoader::isSupported(const std::string& storage, const std::string&
     return extension == "mhd";
 }
 
-ModelDescriptorPtr MHDVolumeLoader::importFromBlob(Blob&& blob, const LoaderProgress&,
-                                                   const PropertyMap& properties) const
+ModelDescriptorPtr MHDVolumeLoader::importFromBlob(Blob&& blob, LoaderProgress&, const PropertyMap& properties) const
 {
     throw std::runtime_error("Volume loading from blob is not supported");
 }
 
-ModelDescriptorPtr MHDVolumeLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr MHDVolumeLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                       const PropertyMap&) const
 {
     std::string volumeFile = storage;

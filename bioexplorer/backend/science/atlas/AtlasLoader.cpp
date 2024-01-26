@@ -63,13 +63,13 @@ bool AtlasLoader::isSupported(const std::string& storage, const std::string& /*e
     return (storage.find(SUPPORTED_PROTOCOL_ATLAS) == 0);
 }
 
-ModelDescriptorPtr AtlasLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr AtlasLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                const PropertyMap& /*properties*/) const
 {
     PLUGIN_THROW("Loading atlas from blob is not supported");
 }
 
-ModelDescriptorPtr AtlasLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr AtlasLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                   const PropertyMap& properties) const
 {
     PropertyMap props = _defaults;

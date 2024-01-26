@@ -52,6 +52,7 @@ std::string to_json(const Response &param)
     {
         nlohmann::json js;
         TO_JSON(param, js, status);
+        TO_JSON(param, js, progress);
         TO_JSON(param, js, contents);
         return js.dump();
     }

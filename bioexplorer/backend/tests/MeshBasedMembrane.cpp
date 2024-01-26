@@ -143,9 +143,8 @@ BOOST_AUTO_TEST_CASE(meshBasedMembrane)
                                   "BioExplorer --db-name=bioexplorer --db-user=core "
                                   "--db-password=core --db-host=localhost --db-port=5432"};
     core::Core core(argv.size(), argv.data());
-    auto& scene = core.getEngine().getScene();
-
-    Assembly assembly(scene, getAssemblyDescriptor());
+    auto& engine = core.getEngine();
+    Assembly assembly(engine, getAssemblyDescriptor());
     assembly.addMembrane(getMembraneDescriptor());
 
     BOOST_CHECK(assembly.getMembrane()->getLipids().begin()->second->getAtoms().size() == 426);

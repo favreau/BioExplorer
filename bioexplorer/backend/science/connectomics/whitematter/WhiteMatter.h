@@ -43,12 +43,12 @@ public:
      * loaded
      */
     WhiteMatter(core::Scene& scene, const details::WhiteMatterDetails& details, const core::Vector3d& position,
-                const core::Quaterniond& rotation, const core::LoaderProgress& callback = core::LoaderProgress());
+                const core::Quaterniond& rotation, core::LoaderProgress& callback);
 
 private:
     double _getDisplacementValue(const DisplacementElement& element) final { return 0; }
 
-    void _buildModel(const core::LoaderProgress& callback);
+    void _buildModel(core::LoaderProgress& callback);
 
     const details::WhiteMatterDetails _details;
     core::Scene& _scene;

@@ -60,7 +60,7 @@ constexpr float POST_LOADING_FRACTION = 50.f;
 class ProgressWatcher : public Assimp::ProgressHandler
 {
 public:
-    ProgressWatcher(const LoaderProgress& callback, const std::string& filename)
+    ProgressWatcher(LoaderProgress& callback, const std::string& filename)
         : _callback(callback)
 
     {
@@ -75,7 +75,7 @@ public:
     }
 
 private:
-    const LoaderProgress& _callback;
+    LoaderProgress& _callback;
     std::function<void()> _cancelCheck;
     std::stringstream _msg;
 };
@@ -100,7 +100,7 @@ std::vector<std::string> getSupportedTypes()
     return output;
 }
 
-Assimp::Importer createImporter(const LoaderProgress& callback, const std::string& filename)
+Assimp::Importer createImporter(LoaderProgress& callback, const std::string& filename)
 {
     Assimp::Importer importer;
     importer.SetProgressHandler(new ProgressWatcher(callback, filename));
@@ -140,7 +140,7 @@ bool MeshLoader::isSupported(const std::string& storage, const std::string& exte
     return std::find(types.begin(), types.end(), extension) != types.end();
 }
 
-ModelDescriptorPtr MeshLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr MeshLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                  const PropertyMap& inProperties) const
 {
     // Fill property map since the actual property types are known now.
@@ -161,7 +161,7 @@ ModelDescriptorPtr MeshLoader::importFromStorage(const std::string& storage, con
     return modelDescriptor;
 }
 
-ModelDescriptorPtr MeshLoader::importFromBlob(Blob&& blob, const LoaderProgress& callback,
+ModelDescriptorPtr MeshLoader::importFromBlob(Blob&& blob, LoaderProgress& callback,
                                               const PropertyMap& propertiesTmp) const
 {
     // Fill property map since the actual property types are known now.
@@ -276,8 +276,7 @@ void MeshLoader::_createMaterials(Model& model, const aiScene* aiScene, const st
 }
 
 ModelMetadata MeshLoader::_postLoad(const aiScene* aiScene, Model& model, const Matrix4f& transformation,
-                                    const size_t materialId, const std::string& folder,
-                                    const LoaderProgress& callback) const
+                                    const size_t materialId, const std::string& folder, LoaderProgress& callback) const
 {
     // Always create placeholder material since it is not guaranteed to exist
     model.createMaterial(materialId, DEFAULT);
@@ -396,7 +395,7 @@ size_t MeshLoader::_getQuality(const GeometryQuality geometryQuality) const
     }
 }
 
-ModelMetadata MeshLoader::importMesh(const std::string& fileName, const LoaderProgress& callback, Model& model,
+ModelMetadata MeshLoader::importMesh(const std::string& fileName, LoaderProgress& callback, Model& model,
                                      const Matrix4f& transformation, const size_t defaultMaterialId,
                                      const GeometryQuality geometryQuality) const
 {

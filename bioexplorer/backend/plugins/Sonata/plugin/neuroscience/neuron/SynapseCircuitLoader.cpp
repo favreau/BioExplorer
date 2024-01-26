@@ -61,7 +61,7 @@ SynapseCircuitLoader::SynapseCircuitLoader(Scene &scene, const ApplicationParame
     _fixedDefaults.setProperty(PROP_ROTATION);
 }
 
-ModelDescriptorPtr SynapseCircuitLoader::importFromStorage(const std::string &path, const LoaderProgress &callback,
+ModelDescriptorPtr SynapseCircuitLoader::importFromStorage(const std::string &path, LoaderProgress &callback,
                                                            const PropertyMap &properties) const
 {
     PLUGIN_INFO("Loading circuit from " << path);

@@ -68,7 +68,7 @@ PairSynapsesLoader::PairSynapsesLoader(Scene &scene, const ApplicationParameters
     _fixedDefaults.setProperty(PROP_ROTATION);
 }
 
-ModelDescriptorPtr PairSynapsesLoader::importFromStorage(const std::string &path, const LoaderProgress &callback,
+ModelDescriptorPtr PairSynapsesLoader::importFromStorage(const std::string &path, LoaderProgress &callback,
                                                          const PropertyMap &properties) const
 {
     PLUGIN_INFO("Loading circuit from " << path);

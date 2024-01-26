@@ -49,7 +49,7 @@ const float springConstant = 0.01f;
 const float idealEdgeLength = 100.0f;
 
 Synaptome::Synaptome(Scene& scene, const SynaptomeDetails& details, const Vector3d& position,
-                     const Quaterniond& rotation, const LoaderProgress& callback)
+                     const Quaterniond& rotation, LoaderProgress& callback)
     : SDFGeometries(NO_GRID_ALIGNMENT, position, rotation)
     , _details(details)
     , _scene(scene)
@@ -73,7 +73,7 @@ void Synaptome::_addEdge(uint64_t source, uint64_t target, const core::Vector3f&
     _nodes[target].mass++;
 }
 
-void Synaptome::_buildModel(const LoaderProgress& callback)
+void Synaptome::_buildModel(LoaderProgress& callback)
 {
     if (_modelDescriptor)
         _scene.removeModel(_modelDescriptor->getModelID());

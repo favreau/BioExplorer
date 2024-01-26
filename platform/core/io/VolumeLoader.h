@@ -35,10 +35,10 @@ public:
     std::string getName() const final;
 
     bool isSupported(const std::string& storage, const std::string& extension) const final;
-    ModelDescriptorPtr importFromBlob(Blob&& blob, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromBlob(Blob&& blob, LoaderProgress& callback,
                                       const PropertyMap& properties) const final;
 
-    ModelDescriptorPtr importFromStorage(const std::string& storage, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromStorage(const std::string& storage, LoaderProgress& callback,
                                          const PropertyMap& properties) const final;
 };
 
@@ -54,14 +54,14 @@ public:
     PropertyMap getProperties() const final;
 
     bool isSupported(const std::string& storage, const std::string& extension) const final;
-    ModelDescriptorPtr importFromBlob(Blob&& blob, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromBlob(Blob&& blob, LoaderProgress& callback,
                                       const PropertyMap& properties) const final;
 
-    ModelDescriptorPtr importFromStorage(const std::string& storage, const LoaderProgress& callback,
+    ModelDescriptorPtr importFromStorage(const std::string& storage, LoaderProgress& callback,
                                          const PropertyMap& properties) const final;
 
 private:
-    ModelDescriptorPtr _loadVolume(const std::string& filename, const LoaderProgress& callback,
+    ModelDescriptorPtr _loadVolume(const std::string& filename, LoaderProgress& callback,
                                    const PropertyMap& properties,
                                    const std::function<void(SharedDataVolumePtr)>& mapData) const;
 };

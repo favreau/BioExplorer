@@ -95,7 +95,7 @@ public:
      * @param properties Loader properties
      * @return A core model if loading is successful
      */
-    core::ModelDescriptorPtr importFromBlob(core::Blob&& blob, const core::LoaderProgress& callback,
+    core::ModelDescriptorPtr importFromBlob(core::Blob&& blob, core::LoaderProgress& callback,
                                             const core::PropertyMap& properties) const final;
 
     /**
@@ -107,7 +107,7 @@ public:
      * @param properties Loader properties
      * @return A core model if loading is successful
      */
-    core::ModelDescriptorPtr importFromStorage(const std::string& storage, const core::LoaderProgress& callback,
+    core::ModelDescriptorPtr importFromStorage(const std::string& storage, core::LoaderProgress& callback,
                                                const core::PropertyMap& properties) const final;
 
     /**
@@ -119,8 +119,7 @@ public:
      * @return std::vector<ModelDescriptorPtr>
      */
     std::vector<core::ModelDescriptorPtr> importModelsFromFile(
-        const std::string& filename, const int32_t brickId = UNDEFINED_BOX_ID,
-        const core::LoaderProgress& callback = core::LoaderProgress(),
+        const std::string& filename, core::LoaderProgress& callback, const int32_t brickId = UNDEFINED_BOX_ID,
         const core::PropertyMap& properties = core::PropertyMap()) const;
 
     /**

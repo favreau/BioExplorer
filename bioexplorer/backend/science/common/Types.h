@@ -510,6 +510,8 @@ typedef struct
 {
     /** Status of the response */
     bool status{true};
+    /** Progress of the current action (when applicable) */
+    double progress{0.0};
     /** Contents of the response (optional) */
     std::string contents;
 } Response;

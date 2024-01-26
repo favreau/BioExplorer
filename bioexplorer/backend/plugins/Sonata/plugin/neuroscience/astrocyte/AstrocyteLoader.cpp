@@ -95,13 +95,13 @@ bool AstrocyteLoader::isSupported(const std::string & /*filename*/, const std::s
     return types.find(extension) != types.end();
 }
 
-ModelDescriptorPtr AstrocyteLoader::importFromBlob(Blob && /*blob*/, const LoaderProgress & /*callback*/,
+ModelDescriptorPtr AstrocyteLoader::importFromBlob(Blob && /*blob*/, LoaderProgress & /*callback*/,
                                                    const PropertyMap & /*properties*/) const
 {
     PLUGIN_THROW("Loading an astrocyte from memory is currently not supported");
 }
 
-ModelDescriptorPtr AstrocyteLoader::importFromStorage(const std::string &path, const LoaderProgress &callback,
+ModelDescriptorPtr AstrocyteLoader::importFromStorage(const std::string &path, LoaderProgress &callback,
                                                       const PropertyMap &properties) const
 {
     PropertyMap props = _defaults;
@@ -152,7 +152,7 @@ PropertyMap AstrocyteLoader::getCLIProperties()
 }
 
 void AstrocyteLoader::_importMorphologiesFromURIs(const PropertyMap &properties, const std::vector<std::string> &uris,
-                                                  const LoaderProgress &callback, Model &model) const
+                                                  LoaderProgress &callback, Model &model) const
 {
     PropertyMap morphologyProps(properties);
 

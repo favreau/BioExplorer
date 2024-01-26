@@ -46,7 +46,7 @@ AdvancedCircuitLoader::AdvancedCircuitLoader(Scene &scene, const ApplicationPara
     _fixedDefaults.setProperty(PROP_ROTATION);
 }
 
-ModelDescriptorPtr AdvancedCircuitLoader::importFromStorage(const std::string &path, const LoaderProgress &callback,
+ModelDescriptorPtr AdvancedCircuitLoader::importFromStorage(const std::string &path, LoaderProgress &callback,
                                                             const PropertyMap &properties) const
 {
     PLUGIN_INFO("Loading circuit from " << path);

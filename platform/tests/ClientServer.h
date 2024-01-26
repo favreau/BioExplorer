@@ -61,7 +61,7 @@ public:
     std::string getName() const { return "forever"; }
     core::PropertyMap getProperties() const { return {}; }
     core::ModelDescriptorPtr importFromBlob(
-        core::Blob&&, const core::LoaderProgress& callback,
+        core::Blob&&, core::LoaderProgress& callback,
         const core::PropertyMap& properties) const final
     {
         for (;;)
@@ -73,7 +73,7 @@ public:
     }
 
     core::ModelDescriptorPtr importFromFile(
-        const std::string&, const core::LoaderProgress& callback,
+        const std::string&, core::LoaderProgress& callback,
         const core::PropertyMap& properties) const final
     {
         for (;;)

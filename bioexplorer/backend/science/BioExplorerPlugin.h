@@ -77,6 +77,7 @@ private:
 
     // Biological elements
     details::Response _addAssembly(const details::AssemblyDetails &payload);
+    details::Response _getAssemblyLoadingProgress(const details::NameDetails &payload);
     details::Response _removeAssembly(const details::AssemblyDetails &payload);
     details::Response _addMembrane(const details::MembraneDetails &payload) const;
     details::Response _addRNASequence(const details::RNASequenceDetails &payload) const;

@@ -86,7 +86,7 @@ bool CacheLoader::isSupported(const std::string& /*filename*/, const std::string
     return types.find(extension) != types.end();
 }
 
-ModelDescriptorPtr CacheLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr CacheLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                const PropertyMap& /*properties*/) const
 {
     PLUGIN_THROW("Loading cache from blob is not supported");
@@ -376,8 +376,8 @@ ModelDescriptorPtr CacheLoader::_importModel(std::stringstream& buffer, const in
     return nullptr;
 }
 
-std::vector<ModelDescriptorPtr> CacheLoader::importModelsFromFile(const std::string& filename, const int32_t brickId,
-                                                                  const LoaderProgress& callback,
+std::vector<ModelDescriptorPtr> CacheLoader::importModelsFromFile(const std::string& filename, LoaderProgress& callback,
+                                                                  const int32_t brickId,
                                                                   const PropertyMap& properties) const
 {
     std::vector<ModelDescriptorPtr> modelDescriptors;
@@ -415,10 +415,10 @@ std::vector<ModelDescriptorPtr> CacheLoader::importModelsFromFile(const std::str
     return modelDescriptors;
 }
 
-ModelDescriptorPtr CacheLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr CacheLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                   const PropertyMap& properties) const
 {
-    const auto modelDescriptors = importModelsFromFile(storage, UNDEFINED_BOX_ID, callback, properties);
+    const auto modelDescriptors = importModelsFromFile(storage, callback, UNDEFINED_BOX_ID, properties);
     for (const auto modelDescriptor : modelDescriptors)
         _scene.addModel(modelDescriptor);
 

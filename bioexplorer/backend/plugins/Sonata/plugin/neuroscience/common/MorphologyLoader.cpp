@@ -1128,13 +1128,13 @@ size_t MorphologyLoader::_getMaterialIdFromColorScheme(const PropertyMap& proper
     return _baseMaterialId + materialId;
 }
 
-ModelDescriptorPtr MorphologyLoader::importFromBlob(Blob&& /*blob*/, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr MorphologyLoader::importFromBlob(Blob&& /*blob*/, LoaderProgress& /*callback*/,
                                                     const PropertyMap& /*properties*/) const
 {
     PLUGIN_THROW("Loading a morphology from memory is currently not supported");
 }
 
-ModelDescriptorPtr MorphologyLoader::importFromStorage(const std::string& path, const LoaderProgress& /*callback*/,
+ModelDescriptorPtr MorphologyLoader::importFromStorage(const std::string& path, LoaderProgress& /*callback*/,
                                                        const PropertyMap& properties) const
 {
     // TODO: This needs to be done to work around wrong types coming from

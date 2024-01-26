@@ -55,16 +55,23 @@ public:
     /**
      * Update the current progress of an operation and call the callback
      */
-    void updateProgress(const std::string& message, const float fraction) const
+    void updateProgress(const std::string& message, const float progress)
     {
 #ifdef BRAYNS_USE_OPENMP
         if (omp_get_thread_num() == 0)
 #endif
             if (_callback)
-                _callback(message, fraction);
+                _callback(message, progress);
+        _progress = progress;
+        _message = message;
     }
 
+    const float getProgress() const { return _progress; }
+    const std::string& getMessage() const { return _message; }
+
     CallbackFn _callback;
+    std::string _message;
+    float _progress{0.f};
 };
 
 /**
@@ -103,7 +110,7 @@ public:
      * @param properties Properties used for loading
      * @return the model that has been created by the loader
      */
-    virtual ModelDescriptorPtr importFromBlob(Blob&& blob, const LoaderProgress& callback,
+    virtual ModelDescriptorPtr importFromBlob(Blob&& blob, LoaderProgress& callback,
                                               const PropertyMap& properties) const = 0;
 
     /**
@@ -114,7 +121,7 @@ public:
      * @param properties Properties used for loading
      * @return the model that has been created by the loader
      */
-    virtual ModelDescriptorPtr importFromStorage(const std::string& storage, const LoaderProgress& callback,
+    virtual ModelDescriptorPtr importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                  const PropertyMap& properties) const = 0;
 
     /**

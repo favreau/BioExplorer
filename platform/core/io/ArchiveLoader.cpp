@@ -197,7 +197,7 @@ bool ArchiveLoader::isSupported(const std::string& storage, const std::string& e
     return isSupportedArchiveType(extension);
 }
 
-ModelDescriptorPtr ArchiveLoader::loadExtracted(const std::string& path, const LoaderProgress& callback,
+ModelDescriptorPtr ArchiveLoader::loadExtracted(const std::string& path, LoaderProgress& callback,
                                                 const PropertyMap& properties) const
 {
     const auto loaderName = properties.getProperty<std::string>("loaderName", "");
@@ -221,7 +221,7 @@ ModelDescriptorPtr ArchiveLoader::loadExtracted(const std::string& path, const L
     throw std::runtime_error("No loader found for archive.");
 }
 
-ModelDescriptorPtr ArchiveLoader::importFromBlob(Blob&& blob, const LoaderProgress& callback,
+ModelDescriptorPtr ArchiveLoader::importFromBlob(Blob&& blob, LoaderProgress& callback,
                                                  const PropertyMap& properties) const
 {
     TmpFolder tmpFolder;
@@ -229,7 +229,7 @@ ModelDescriptorPtr ArchiveLoader::importFromBlob(Blob&& blob, const LoaderProgre
     return loadExtracted(tmpFolder.path, callback, properties);
 }
 
-ModelDescriptorPtr ArchiveLoader::importFromStorage(const std::string& storage, const LoaderProgress& callback,
+ModelDescriptorPtr ArchiveLoader::importFromStorage(const std::string& storage, LoaderProgress& callback,
                                                  const PropertyMap& properties) const
 {
     TmpFolder tmpFolder;
