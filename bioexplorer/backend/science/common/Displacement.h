@@ -29,18 +29,25 @@ enum class DisplacementElement
 {
     vasculature_segment_strength = 0,
     vasculature_segment_frequency = 1,
-    morphology_soma_strength = 2,
-    morphology_soma_frequency = 3,
-    morphology_section_strength = 4,
-    morphology_section_frequency = 5,
-    morphology_nucleus_strength = 6,
-    morphology_nucleus_frequency = 7,
-    morphology_mitochondrion_strength = 8,
-    morphology_mitochondrion_frequency = 9,
-    morphology_myelin_steath_strength = 10,
-    morphology_myelin_steath_frequency = 11,
-    morphology_spine_strength = 12,
-    morphology_spine_frequency = 13
+    vasculature_segment_noise = 2,
+    morphology_soma_strength = 3,
+    morphology_soma_frequency = 4,
+    morphology_soma_noise = 5,
+    morphology_section_strength = 6,
+    morphology_section_frequency = 7,
+    morphology_section_noise = 8,
+    morphology_nucleus_strength = 9,
+    morphology_nucleus_frequency = 10,
+    morphology_nucleus_noise = 11,
+    morphology_mitochondrion_strength = 12,
+    morphology_mitochondrion_frequency = 13,
+    morphology_mitochondrion_noise = 14,
+    morphology_myelin_steath_strength = 15,
+    morphology_myelin_steath_frequency = 16,
+    morphology_myelin_steath_noise = 17,
+    morphology_spine_strength = 18,
+    morphology_spine_frequency = 19,
+    morphology_spine_noise = 20
 };
 
 const double DEFAULT_VASCULATURE_SEGMENT_STRENGTH = 0.3;
@@ -48,14 +55,20 @@ const double DEFAULT_VASCULATURE_SEGMENT_FREQUENCY = 0.5;
 
 const double DEFAULT_MORPHOLOGY_SOMA_STRENGTH = 0.1;
 const double DEFAULT_MORPHOLOGY_SOMA_FREQUENCY = 3.0;
+const double DEFAULT_MORPHOLOGY_SOMA_NOISE = 0.0;
 const double DEFAULT_MORPHOLOGY_SECTION_STRENGTH = 0.15;
 const double DEFAULT_MORPHOLOGY_SECTION_FREQUENCY = 2.0;
+const double DEFAULT_MORPHOLOGY_SECTION_NOISE = 0.0;
 const double DEFAULT_MORPHOLOGY_NUCLEUS_STRENGTH = 0.01;
 const double DEFAULT_MORPHOLOGY_NUCLEUS_FREQUENCY = 2.0;
+const double DEFAULT_MORPHOLOGY_NUCLEUS_NOISE = 0.0;
 const double DEFAULT_MORPHOLOGY_MITOCHONDRION_STRENGTH = 0.2;
 const double DEFAULT_MORPHOLOGY_MITOCHONDRION_FREQUENCY = 100.0;
+const double DEFAULT_MORPHOLOGY_MITOCHONDRION_NOISE = 0.0;
 const double DEFAULT_MORPHOLOGY_MYELIN_STEATH_STRENGTH = 0.1;
 const double DEFAULT_MORPHOLOGY_MYELIN_STEATH_FREQUENCY = 2.5;
+const double DEFAULT_MORPHOLOGY_MYELIN_STEATH_NOISE = 0.0;
 const double DEFAULT_MORPHOLOGY_SPINE_STRENGTH = 0.01;
 const double DEFAULT_MORPHOLOGY_SPINE_FREQUENCY = 25.0;
+const double DEFAULT_MORPHOLOGY_SPINE_NOISE = 0.0;
 } // namespace bioexplorer

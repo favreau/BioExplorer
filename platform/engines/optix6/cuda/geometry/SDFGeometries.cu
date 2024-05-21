@@ -103,11 +103,19 @@ static __device__ inline float opSmoothIntersection(const float d1, const float 
     return mix(d2, d1, h) + k * h * (1.f - h);
 }
 
-static __device__ inline float opDisplacement(const float3& p, const float amplitude, const float frequency)
+static __device__ inline float opDisplacement(const float3& p, const float amplitude, const float frequency,
+                                              const float perlin)
 {
-    return amplitude *
-           (0.7f * sin(frequency * p.x * 0.72f) * sin(frequency * p.y * 0.65f) * sin(frequency * p.z * 0.81f) +
-            0.3f * cos(p.x * 2.12f) * cos(p.y * 2.23f) * cos(p.z * 2.41f));
+    float value = 0.f;
+    if (amplitude > 0.f)
+    {
+        value = amplitude *
+                (0.7f * sin(frequency * p.x * 0.72f) * sin(frequency * p.y * 0.65f) * sin(frequency * p.z * 0.81f) +
+                 0.3f * cos(p.x * 2.12f) * cos(p.y * 2.23f) * cos(p.z * 2.41f));
+    }
+    if (perlin > 0.f)
+        value += perlin * optix::clamp(worleyNoise(p * frequency / 10.f, 2.f), 0.f, 1.f);
+    return value;
 }
 
 static __device__ inline float sdSphere(const float3& p, const float3& c, float r)
@@ -287,9 +295,9 @@ static __device__ inline ::optix::Aabb getBounds(const SDFGeometry* primitive)
 static __device__ inline float calcDistance(const SDFGeometry* primitive, const float3& position,
                                             const bool processDisplacement)
 {
-    const float displacement = (processDisplacement && primitive->userParams.x > 0.f)
-                                   ? opDisplacement(position, primitive->userParams.x, primitive->userParams.y)
-                                   : 0.f;
+    const float displacement = (processDisplacement) ? opDisplacement(position, primitive->userParams.x,
+                                                                      primitive->userParams.y, primitive->userParams.z)
+                                                     : 0.f;
     switch (primitive->type)
     {
     case SDFType::sdf_sphere:

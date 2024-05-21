@@ -21,7 +21,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .math_utils import Vector2
+from .math_utils import Vector3
 
 class NeuronDisplacementParams:
     """
@@ -31,22 +31,22 @@ class NeuronDisplacementParams:
 
     def __init__(
         self,
-        soma=Vector2(0.1, 3.0),
-        section=Vector2(0.15, 2.0),
-        nucleus=Vector2(0.01, 2.0),
-        mitochondrion=Vector2(0.2, 100.0),
-        myelin_sheath=Vector2(0.1, 2.5),
-        spine=Vector2(0.01, 25.0),
+        soma=Vector3(0.1, 3.0, 0.0),
+        section=Vector3(0.15, 2.0, 0.0),
+        nucleus=Vector3(0.01, 2.0, 0.0),
+        mitochondrion=Vector3(0.2, 100.0, 0.0),
+        myelin_sheath=Vector3(0.1, 2.5, 0.0),
+        spine=Vector3(0.01, 25.0, 0.0),
     ):
         """
         Initialize displacement parameters for various components of a neuron.
 
-        :param soma: Vector2, optional: Amplitude and frequency for the soma. Defaults to [0.1, 3.0].
-        :param section: Vector2, optional: Amplitude and frequency for the section. Defaults to [0.15, 2.0].
-        :param nucleus: Vector2, optional: Amplitude and frequency for the nucleus. Defaults to [0.01, 2.0].
-        :param mitochondrion: Vector2, optional: Amplitude and frequency for the mitochondrion. Defaults to [0.2, 100.0].
-        :param myelin_sheath: Vector2, optional: Amplitude and frequency for the myelin sheath. Defaults to [0.1, 2.5].
-        :param spine: Vector2, optional: Amplitude and frequency for the spine. Defaults to [0.01, 25.0].
+        :param soma: Vector3, optional: Amplitude and frequency for the soma. Defaults to [0.1, 3.0, 0.0].
+        :param section: Vector3, optional: Amplitude and frequency for the section. Defaults to [0.15, 2.0, 0.0].
+        :param nucleus: Vector3, optional: Amplitude and frequency for the nucleus. Defaults to [0.01, 2.0, 0.0].
+        :param mitochondrion: Vector3, optional: Amplitude and frequency for the mitochondrion. Defaults to [0.2, 100.0, 0.0].
+        :param myelin_sheath: Vector3, optional: Amplitude and frequency for the myelin sheath. Defaults to [0.1, 2.5, 0.0].
+        :param spine: Vector3, optional: Amplitude and frequency for the spine. Defaults to [0.01, 25.0, 0.0].
         """
         self.components = {
             'soma': soma,
@@ -62,9 +62,9 @@ class NeuronDisplacementParams:
         Retrieve displacement parameters for a specific neuron component.
 
         :param component: str: Name of the neuron component.
-        :return: Vector2: Displacement parameters for the specified component.
+        :return: Vector3: Displacement parameters for the specified component.
         """
-        return self.components.get(component, Vector2(0, 0))
+        return self.components.get(component, Vector3(0, 0, 0))
 
     def to_list(self):
         """
@@ -72,7 +72,7 @@ class NeuronDisplacementParams:
 
         :return: list of float: List containing the amplitude and frequency values for all components.
         """
-        return [value for params in self.components.values() for value in (params.x, params.y)]
+        return [value for params in self.components.values() for value in (params.x, params.y, params.z)]
 
     def copy(self):
         """
@@ -97,20 +97,20 @@ class AstrocyteDisplacementParams:
 
     def __init__(
         self,
-        soma=Vector2(0.05, 0.5),
-        section=Vector2(0.5, 5.0),
-        nucleus=Vector2(0.01, 2.0),
-        mitochondrion=Vector2(0.2, 100.0),
-        end_foot=Vector2(0.3, 0.5),
+        soma=Vector3(0.05, 0.5, 0.0),
+        section=Vector3(0.5, 5.0, 0.0),
+        nucleus=Vector3(0.01, 2.0, 0.0),
+        mitochondrion=Vector3(0.2, 100.0, 0.0),
+        end_foot=Vector3(0.3, 0.5, 0.0),
     ):
         """
         Initialize displacement parameters for various components of an astrocyte.
 
-        :param soma: Vector2, optional: Amplitude and frequency for the soma. Defaults to [0.05, 0.5].
-        :param section: Vector2, optional: Amplitude and frequency for the section. Defaults to [0.5, 5.0].
-        :param nucleus: Vector2, optional: Amplitude and frequency for the nucleus. Defaults to [0.01, 2.0].
-        :param mitochondrion: Vector2, optional: Amplitude and frequency for the mitochondrion. Defaults to [0.2, 100.0].
-        :param end_foot: Vector2, optional: Amplitude and frequency for the end foot. Defaults to [0.3, 0.5].
+        :param soma: Vector3, optional: Amplitude and frequency for the soma. Defaults to [0.05, 0.5, 0.0].
+        :param section: Vector3, optional: Amplitude and frequency for the section. Defaults to [0.5, 5.0, 0.0].
+        :param nucleus: Vector3, optional: Amplitude and frequency for the nucleus. Defaults to [0.01, 2.0, 0.0].
+        :param mitochondrion: Vector3, optional: Amplitude and frequency for the mitochondrion. Defaults to [0.2, 100.0, 0.0].
+        :param end_foot: Vector3, optional: Amplitude and frequency for the end foot. Defaults to [0.3, 0.5, 0.0].
         """
         self.components = {
             'soma': soma,
@@ -125,9 +125,9 @@ class AstrocyteDisplacementParams:
         Retrieve displacement parameters for a specific astrocyte component.
 
         :param component: str: Name of the astrocyte component.
-        :return: Vector2: Displacement parameters for the specified component.
+        :return: Vector3: Displacement parameters for the specified component.
         """
-        return self.components.get(component, Vector2(0, 0))
+        return self.components.get(component, Vector3(0, 0))
 
     def to_list(self):
         """
@@ -135,7 +135,7 @@ class AstrocyteDisplacementParams:
 
         :return: list of float: List containing the amplitude and frequency values for all components.
         """
-        return [value for params in self.components.values() for value in (params.x, params.y)]
+        return [value for params in self.components.values() for value in (params.x, params.y, params.z)]
 
     def copy(self):
         """
@@ -155,16 +155,24 @@ class AstrocyteDisplacementParams:
 class VasculatureDisplacementParams:
     """Parameters used for the sinusoidal SDF displacement function for vasculature"""
 
-    def __init__(self, segment=Vector2(0.3, 0.5)):
+    def __init__(self, segment=Vector3(0.3, 0.5, 0.0)):
         """
         Parameters used to define how cells should be represented using the SDF technique
 
-        :segment: (Vector2, optional): amplitude and frequency for the segment. Defaults are
-        [0.3, 5.0]
+        :segment: (Vector3, optional): amplitude and frequency for the segment. Defaults are
+        [0.3, 5.0, 0.0]
         """
-        assert isinstance(segment, Vector2)
+        assert isinstance(segment, Vector3)
 
-        self.segment = segment
+        self.components = {'segment': segment}
+
+    def get_displacement_params(self, component):
+        """
+        Retrieve displacement parameters for the synapse.
+
+        :return: Vector3: Displacement parameters for the component.
+        """
+        return self.components.get(component, Vector3(0, 0))
 
     def to_list(self):
         """
@@ -173,7 +181,7 @@ class VasculatureDisplacementParams:
         :return: A list containing the values of class members
         :rtype: list
         """
-        return [self.segment.x, self.segment.y]
+        return [value for params in self.components.values() for value in (params.x, params.y, params.z)]
 
     def copy(self):
         """
@@ -181,7 +189,13 @@ class VasculatureDisplacementParams:
 
         :return: VasculatureDisplacementParams: A copy of the object
         """
-        return VasculatureDisplacementParams(self.segment)
+        return VasculatureDisplacementParams(**self.components)
+
+    def __repr__(self):
+        """
+        Provide a string representation of the object for debugging and logging purposes.
+        """
+        return f"VasculatureDisplacementParams({', '.join(f'{k}={v}' for k, v in self.components.items())})"
 
 
 class SynapseDisplacementParams:
@@ -190,22 +204,22 @@ class SynapseDisplacementParams:
     This class defines displacement parameters for the spine component of a synapse.
     """
 
-    def __init__(self, spine=Vector2(0.01, 25.0)):
+    def __init__(self, spine=Vector3(0.01, 25.0, 0.0)):
         """
         Initialize displacement parameters for the spine of a synapse.
 
-        :param spine: Vector2, optional: Amplitude and frequency for the spine. Defaults to [0.01, 25.0].
+        :param spine: Vector3, optional: Amplitude and frequency for the spine. Defaults to [0.01, 25.0, 0.0].
         """
-        assert isinstance(spine, Vector2)
+        assert isinstance(spine, Vector3)
         self.components = {'spine': spine}
 
-    def get_displacement_params(self):
+    def get_displacement_params(self, component):
         """
-        Retrieve displacement parameters for the spine.
+        Retrieve displacement parameters for the synapse.
 
-        :return: Vector2: Displacement parameters for the spine.
+        :return: Vector3: Displacement parameters for the component.
         """
-        return self.components['spine']
+        return self.components.get(component, Vector3(0, 0))
 
     def to_list(self):
         """
@@ -213,7 +227,7 @@ class SynapseDisplacementParams:
 
         :return: list of float: List containing the amplitude and frequency values for the spine.
         """
-        return [self.components['spine'].x, self.components['spine'].y]
+        return [value for params in self.components.values() for value in (params.x, params.y, params.z)]
 
     def copy(self):
         """
@@ -221,10 +235,11 @@ class SynapseDisplacementParams:
 
         :return: SynapseDisplacementParams: A new instance with the same parameters.
         """
-        return SynapseDisplacementParams(spine=self.components['spine'])
+        return SynapseDisplacementParams(**self.components)
 
     def __repr__(self):
         """
         Provide a string representation of the object for debugging and logging purposes.
         """
-        return f"SynapseDisplacementParams(spine={self.components['spine']})"
+        return f"VasculatureDisplacementParams({', '.join(f'{k}={v}' for k, v in self.components.items())})"
+

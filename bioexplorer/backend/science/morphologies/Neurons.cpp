@@ -98,26 +98,38 @@ double Neurons::_getDisplacementValue(const DisplacementElement& element)
         return valueFromDoubles(params, 0, DEFAULT_MORPHOLOGY_SOMA_STRENGTH);
     case DisplacementElement::morphology_soma_frequency:
         return valueFromDoubles(params, 1, DEFAULT_MORPHOLOGY_SOMA_FREQUENCY);
+    case DisplacementElement::morphology_soma_noise:
+        return valueFromDoubles(params, 2, DEFAULT_MORPHOLOGY_SOMA_NOISE);
     case DisplacementElement::morphology_section_strength:
-        return valueFromDoubles(params, 2, DEFAULT_MORPHOLOGY_SECTION_STRENGTH);
+        return valueFromDoubles(params, 3, DEFAULT_MORPHOLOGY_SECTION_STRENGTH);
     case DisplacementElement::morphology_section_frequency:
-        return valueFromDoubles(params, 3, DEFAULT_MORPHOLOGY_SECTION_FREQUENCY);
+        return valueFromDoubles(params, 4, DEFAULT_MORPHOLOGY_SECTION_FREQUENCY);
+    case DisplacementElement::morphology_section_noise:
+        return valueFromDoubles(params, 5, DEFAULT_MORPHOLOGY_SECTION_NOISE);
     case DisplacementElement::morphology_nucleus_strength:
-        return valueFromDoubles(params, 4, DEFAULT_MORPHOLOGY_NUCLEUS_STRENGTH);
+        return valueFromDoubles(params, 6, DEFAULT_MORPHOLOGY_NUCLEUS_STRENGTH);
     case DisplacementElement::morphology_nucleus_frequency:
-        return valueFromDoubles(params, 5, DEFAULT_MORPHOLOGY_NUCLEUS_FREQUENCY);
+        return valueFromDoubles(params, 7, DEFAULT_MORPHOLOGY_NUCLEUS_FREQUENCY);
+    case DisplacementElement::morphology_nucleus_noise:
+        return valueFromDoubles(params, 8, DEFAULT_MORPHOLOGY_NUCLEUS_NOISE);
     case DisplacementElement::morphology_mitochondrion_strength:
-        return valueFromDoubles(params, 6, DEFAULT_MORPHOLOGY_MITOCHONDRION_STRENGTH);
+        return valueFromDoubles(params, 9, DEFAULT_MORPHOLOGY_MITOCHONDRION_STRENGTH);
     case DisplacementElement::morphology_mitochondrion_frequency:
-        return valueFromDoubles(params, 7, DEFAULT_MORPHOLOGY_MITOCHONDRION_FREQUENCY);
+        return valueFromDoubles(params, 10, DEFAULT_MORPHOLOGY_MITOCHONDRION_FREQUENCY);
+    case DisplacementElement::morphology_mitochondrion_noise:
+        return valueFromDoubles(params, 11, DEFAULT_MORPHOLOGY_MITOCHONDRION_NOISE);
     case DisplacementElement::morphology_myelin_steath_strength:
-        return valueFromDoubles(params, 8, DEFAULT_MORPHOLOGY_MYELIN_STEATH_STRENGTH);
+        return valueFromDoubles(params, 12, DEFAULT_MORPHOLOGY_MYELIN_STEATH_STRENGTH);
     case DisplacementElement::morphology_myelin_steath_frequency:
-        return valueFromDoubles(params, 9, DEFAULT_MORPHOLOGY_MYELIN_STEATH_FREQUENCY);
+        return valueFromDoubles(params, 13, DEFAULT_MORPHOLOGY_MYELIN_STEATH_FREQUENCY);
+    case DisplacementElement::morphology_myelin_steath_noise:
+        return valueFromDoubles(params, 14, DEFAULT_MORPHOLOGY_MYELIN_STEATH_NOISE);
     case DisplacementElement::morphology_spine_strength:
-        return valueFromDoubles(params, 10, DEFAULT_MORPHOLOGY_SPINE_STRENGTH);
+        return valueFromDoubles(params, 15, DEFAULT_MORPHOLOGY_SPINE_STRENGTH);
     case DisplacementElement::morphology_spine_frequency:
-        return valueFromDoubles(params, 11, DEFAULT_MORPHOLOGY_SPINE_FREQUENCY);
+        return valueFromDoubles(params, 16, DEFAULT_MORPHOLOGY_SPINE_FREQUENCY);
+    case DisplacementElement::morphology_spine_noise:
+        return valueFromDoubles(params, 17, DEFAULT_MORPHOLOGY_SPINE_NOISE);
     default:
         PLUGIN_THROW("Invalid displacement element");
     }
@@ -390,7 +402,8 @@ void Neurons::_buildSomasOnly(Model& model, ThreadSafeContainer& container, cons
             const Vector3d position = soma.second.position;
             container.addSphere(position, radius, baseMaterialId, useSdf, somaUserData, {},
                                 Vector3f(_getDisplacementValue(DisplacementElement::morphology_soma_strength),
-                                         _getDisplacementValue(DisplacementElement::morphology_soma_frequency), 0.f));
+                                         _getDisplacementValue(DisplacementElement::morphology_soma_frequency),
+                                         _getDisplacementValue(DisplacementElement::morphology_soma_noise)));
         }
         if (_details.generateInternals)
         {
@@ -646,7 +659,8 @@ void Neurons::_buildMorphology(ThreadSafeContainer& container, const uint64_t ne
                 _animatedPosition(Vector4d(somaPosition + somaRotation * Vector3d(point), dstRadius), neuronId);
             const Vector3f displacement = {
                 Vector3f(_getDisplacementValue(DisplacementElement::morphology_soma_strength),
-                         _getDisplacementValue(DisplacementElement::morphology_soma_frequency), 0.f)};
+                         _getDisplacementValue(DisplacementElement::morphology_soma_frequency),
+                         _getDisplacementValue(DisplacementElement::morphology_soma_noise))};
 
             Vector3d p2 = Vector3d();
             if (voltageScaling == 1.f)
@@ -693,7 +707,7 @@ void Neurons::_buildMorphology(ThreadSafeContainer& container, const uint64_t ne
                 container.addSphere(somaPosition, correctedSomaRadius, somaMaterialId, useSdf, somaUserData, {},
                                     Vector3f(_getDisplacementValue(DisplacementElement::morphology_soma_strength),
                                              _getDisplacementValue(DisplacementElement::morphology_soma_frequency),
-                                             0.f)));
+                                             _getDisplacementValue(DisplacementElement::morphology_soma_noise))));
             if (useSdf)
                 for (const auto index : somaNeighbours)
                     container.setSDFGeometryNeighbours(index, somaNeighbours);
@@ -902,7 +916,8 @@ void Neurons::_addSection(ThreadSafeContainer& container, const uint64_t neuronI
         {
             Vector3f displacement{std::min(std::min(srcRadius, dstRadius) * 0.5f,
                                            _getDisplacementValue(DisplacementElement::morphology_section_strength)),
-                                  _getDisplacementValue(DisplacementElement::morphology_section_frequency), 0.f};
+                                  _getDisplacementValue(DisplacementElement::morphology_section_frequency),
+                                  _getDisplacementValue(DisplacementElement::morphology_section_noise)};
 
             size_t materialId = _details.morphologyColorScheme == MorphologyColorScheme::distance_to_soma
                                     ? _getMaterialFromDistanceToSoma(_details.maxDistanceToSoma, distanceToSoma)
@@ -919,7 +934,7 @@ void Neurons::_addSection(ThreadSafeContainer& container, const uint64_t neuronI
                         Vector3f(2.f * srcRadius *
                                      _getDisplacementValue(DisplacementElement::morphology_section_strength),
                                  _getDisplacementValue(DisplacementElement::morphology_section_frequency) / srcRadius,
-                                 0.f);
+                                 _getDisplacementValue(DisplacementElement::morphology_section_noise));
                 }
                 if (i == middlePointIndex + 1 || i == middlePointIndex + 3)
                     sectionNeighbours = {};
@@ -1062,7 +1077,7 @@ void Neurons::_addSectionInternals(ThreadSafeContainer& container, const uint64_
                                      2.0,
                                  radius *
                                      _getDisplacementValue(DisplacementElement::morphology_mitochondrion_frequency),
-                                 0.f));
+                                 radius * _getDisplacementValue(DisplacementElement::morphology_mitochondrion_noise)));
 
                     mitochondriaVolume += coneVolume(length(position - previousPosition), radius, previousRadius);
                 }
@@ -1129,7 +1144,7 @@ void Neurons::_addAxonMyelinSheath(ThreadSafeContainer& container, const uint64_
         const Vector3f displacement{srcRadius *
                                         _getDisplacementValue(DisplacementElement::morphology_myelin_steath_strength),
                                     _getDisplacementValue(DisplacementElement::morphology_myelin_steath_frequency),
-                                    0.f};
+                                    _getDisplacementValue(DisplacementElement::morphology_myelin_steath_noise)};
         Neighbours neighbours;
 
         while (currentLength < myelinSteathLength && i < nbPoints - NB_MYELIN_FREE_SEGMENTS)
@@ -1164,9 +1179,9 @@ void Neurons::_addSpine(ThreadSafeContainer& container, const uint64_t neuronId,
     const double spineScale = 0.25;
     const double spineLength = 0.4 + 0.2 * rnd1();
 
-    const auto spineDisplacement =
-        Vector3d(_getDisplacementValue(DisplacementElement::morphology_spine_strength),
-                 _getDisplacementValue(DisplacementElement::morphology_spine_frequency), 0.0);
+    const auto spineDisplacement = Vector3d(_getDisplacementValue(DisplacementElement::morphology_spine_strength),
+                                            _getDisplacementValue(DisplacementElement::morphology_spine_frequency),
+                                            _getDisplacementValue(DisplacementElement::morphology_spine_noise));
 
     const auto spineSmallRadius = std::max(spineDisplacement.x, radius * spineRadiusRatio * 0.5 * spineScale);
     const auto spineBaseRadius = std::max(spineDisplacement.x, radius * spineRadiusRatio * 0.75 * spineScale);
