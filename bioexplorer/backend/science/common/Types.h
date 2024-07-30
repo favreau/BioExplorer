@@ -440,7 +440,8 @@ enum class MorphologyRepresentation
     orientation = 3,
     bezier = 4,
     contour = 5,
-    surface = 6
+    surface = 6,
+    spheres = 7
 };
 
 enum class MorphologyRealismLevel

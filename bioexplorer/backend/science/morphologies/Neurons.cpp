@@ -665,12 +665,21 @@ void Neurons::_buildMorphology(ThreadSafeContainer& container, const uint64_t ne
             const auto src = _animatedPosition(Vector4d(somaPosition + somaRotation * p2, srcRadius), neuronId);
 
             correctedSomaRadius = std::max(correctedSomaRadius, length(p2)) * 2.0;
-            const uint64_t geometryIndex = container.addCone(src, srcRadius, dst, dstRadius, somaMaterialId, useSdf,
-                                                             somaUserData, {}, displacement);
-            somaNeighbours.insert(geometryIndex);
-            sectionNeighbours.insert(geometryIndex);
-            if (!useSdf)
-                container.addSphere(dst, dstRadius, somaMaterialId, useSdf, somaUserData);
+            if (_details.morphologyRepresentation == MorphologyRepresentation::spheres)
+            {
+                const auto spheres = fillConeWithSpheres({src, srcRadius}, {dst, dstRadius});
+                for (const auto& sphere : spheres)
+                    container.addSphere(Vector3f(sphere), sphere.w, somaMaterialId, useSdf, somaUserData);
+            }
+            else
+            {
+                const uint64_t geometryIndex = container.addCone(src, srcRadius, dst, dstRadius, somaMaterialId, useSdf,
+                                                                 somaUserData, {}, displacement);
+                somaNeighbours.insert(geometryIndex);
+                sectionNeighbours.insert(geometryIndex);
+                if (!useSdf)
+                    container.addSphere(dst, dstRadius, somaMaterialId, useSdf, somaUserData);
+            }
             ++count;
         }
         correctedSomaRadius = count == 0 ? somaRadius : correctedSomaRadius / count;
@@ -959,14 +968,22 @@ void Neurons::_addSection(ThreadSafeContainer& container, const uint64_t neuronI
                 }
             }
 
-            if (!useSdf)
-                container.addSphere(dst, dstRadius, materialId, useSdf, userData);
+            if (_details.morphologyRepresentation == MorphologyRepresentation::spheres)
+            {
+                container.addSphere(src, srcRadius, materialId, useSdf, userData);
+                if (i == localPoints.size() - 1)
+                    container.addSphere(dst, dstRadius, materialId, useSdf, userData);
+            }
+            else
+            {
+                if (!useSdf)
+                    container.addSphere(dst, dstRadius, materialId, useSdf, userData);
 
-            const uint64_t geometryIndex =
-                container.addCone(src, srcRadius, dst, dstRadius, materialId, useSdf, userData, {}, displacement);
-
-            previousGeometryIndex = geometryIndex;
-            sectionNeighbours = {geometryIndex};
+                const uint64_t geometryIndex =
+                    container.addCone(src, srcRadius, dst, dstRadius, materialId, useSdf, userData, {}, displacement);
+                previousGeometryIndex = geometryIndex;
+                sectionNeighbours = {geometryIndex};
+            }
 
             // Stop if distance to soma in greater than the specified max value
             _maxDistanceToSoma = std::max(_maxDistanceToSoma, distanceToSoma + sectionLength);

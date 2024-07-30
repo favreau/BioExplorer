@@ -357,10 +357,10 @@ Transformation combineTransformations(const Transformations& transformations)
         finalMatrix *= matrix;
     }
 
-    glm::vec3 scale;
+    Vector3f scale;
     glm::quat rotation;
-    glm::vec3 translation;
-    glm::vec3 skew;
+    Vector3f translation;
+    Vector3f skew;
     glm::vec4 perspective;
     glm::decompose(finalMatrix, scale, rotation, translation, skew, perspective);
 
@@ -449,10 +449,10 @@ double capsuleVolume(const double height, const double radius)
 
 Vector3f transformVector3f(const Vector3f& v, const Matrix4f& transformation)
 {
-    glm::vec3 scale;
+    Vector3f scale;
     glm::quat rotation;
-    glm::vec3 translation;
-    glm::vec3 skew;
+    Vector3f translation;
+    Vector3f skew;
     glm::vec4 perspective;
     glm::decompose(transformation, scale, rotation, translation, skew, perspective);
     return translation + rotation * v;
@@ -611,6 +611,30 @@ double valueFromDoubles(const doubles& array, const size_t index, const double d
 Vector3d getAlignmentToGrid(const double gridSize, const Vector3d& position)
 {
     return gridSize > 0.0 ? Vector3d(Vector3i(position / gridSize) * static_cast<int>(gridSize)) : position;
+}
+
+Vector4fs fillConeWithSpheres(const Vector4f& center, const Vector4f& apex)
+{
+    auto interpolate = [](const Vector3f& p1, const Vector3f& p2, float t) { return p1 + (p2 - p1) * t; };
+    auto distance = [](const Vector3f& p1, const Vector3f& p2) { return length(p2 - p1); };
+
+    const Vector3f p1 = Vector3f(center);
+    const Vector3f p2 = Vector3f(apex);
+    const float h = distance(p1, p2);
+    const Vector3f direction = (p2 - p1) / h;
+
+    Vector4fs spheres;
+    float t = 0.f;
+    while (t <= 1.f)
+    {
+        Vector3f c = interpolate(p1, p2, t);
+        float r = center.w + t * (apex.w - center.w);
+        if (r > 0.f)
+            spheres.push_back({c, r});
+        t += (r / h) * 0.5f; // Overlapping by half of their radius
+    }
+
+    return spheres;
 }
 
 } // namespace common

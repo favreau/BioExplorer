@@ -302,5 +302,17 @@ double valueFromDoubles(const doubles& array, const size_t index, const double d
  */
 core::Vector3d getAlignmentToGrid(const double gridSize, const core::Vector3d& position);
 
+/**
+ * @brief Fills a cone with spheres that progressively decrease in radius.
+ *
+ * This function generates spheres that fit perfectly within the profile of a cone defined by two points and two radii.
+ * The spheres overlap by half of their radius for an optimal fit.
+ *
+ * @param center Center of the base of the cone.
+ * @param apex Apex of the cone
+ * @return A vector of spheres, each defined by its center and radius.
+ */
+core::Vector4fs fillConeWithSpheres(const core::Vector4f& center, const core::Vector4f& apex);
+
 } // namespace common
 } // namespace bioexplorer

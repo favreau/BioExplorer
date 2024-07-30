@@ -217,6 +217,7 @@ class MorphologyRepresentation(Enum):
     BEZIER = 4
     CONTOUR = 5
     SURFACE = 6
+    SPHERES = 7
 
 
 class MorphologyRealismLevel(Enum):
